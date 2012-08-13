@@ -8,7 +8,6 @@
 * gcc, g++, or cc
 * pkg-config
 * autotools
-
 * libcurl
 * libxml-2.0
 * oauth
