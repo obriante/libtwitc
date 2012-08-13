@@ -17,10 +17,11 @@
 
 	$ ./autogen.sh
   or
+
 	$ sh autogen.sh
 
 
-* Compile - Makefile:
+## Compile - Makefile:
     
 	$ ./configure
 	$ make
