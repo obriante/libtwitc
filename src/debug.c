@@ -1,0 +1,159 @@
+/*
+ * libtwitc - C Support Library for Twitter
+ * Copyright (C) 2012 Orazio Briante orazio.briante@hotmail.it
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#include <twitc/debug.h>
+
+#include <stdlib.h>
+#include <stdarg.h>
+#include <time.h>
+
+#ifdef __cplusplus
+extern "C"{
+#endif
+
+
+void checkLogFileDimension(const string_t fileName, const long maxSize)
+{
+	if(fileName)
+	{
+		debug("fileName:\t%s",fileName);
+
+		long size=checkFileSize(fileName);
+		debug("size:\t%s",fileName);
+
+		if(size>=maxSize)
+			removeFile(fileName);
+
+	}
+}
+
+void initLog(const string_t fileName, const LogLevel level, const long maxSize)
+{
+
+	if(fileName)
+	{
+
+		checkLogFileDimension(fileName, maxSize);
+
+		debug("fileName:\t%s",fileName);
+
+		logLevel=level;
+		logFile = fopen(fileName, "a");
+
+		if(logFile)
+			debug("Opened \"%s\" in Append Mode", fileName);
+
+	}
+}
+
+
+
+void uninitLog()
+{
+	if(logFile)
+	{
+		debug("Closing logFile");
+		fclose(logFile);
+		logFile=NULL;
+		logLevel=low;
+	}
+
+}
+
+static void _logWrite(FILE *output, const char *type, const char *function, const char *template, va_list argp)
+{
+	time_t now;
+	tm_t tmNow;
+	char timeString[26];
+
+	now = time(NULL);
+	localtime_r(&now, &tmNow);
+	strftime(timeString, sizeof(timeString), "%Y-%m-%d %H:%M:%S", &tmNow);
+
+	fprintf(output, "%s [%s] (%s)\t",  type, timeString, function);
+	vfprintf(output, template, argp);
+	fprintf(output, "\n");
+	fflush(output);
+}
+
+
+void _error(const char *function, const char *template, ...)
+{
+	va_list argp;
+	va_start(argp, template);
+
+	_logWrite(stderr,"ERROR  ", function, template, argp);
+
+	if(logFile)
+		if(logLevel==high || logLevel==medium || logLevel==low)
+			_logWrite(logFile,"ERROR  ", function, template, argp);
+
+
+	va_end(argp);
+}
+
+
+void _warning(const char *function, const char *template, ...)
+{
+	va_list argp;
+
+	va_start(argp, template);
+
+	_logWrite(stderr,"WARNING", function, template, argp);
+
+	if(logFile)
+		if(logLevel==high || logLevel==medium)
+			_logWrite(logFile,"WARNING", function, template, argp);
+
+
+	va_end(argp);
+}
+
+void _info(const char *function, const char *template, ...)
+{
+	va_list argp;
+	va_start(argp, template);
+
+	_logWrite(stderr,"INFO   ", function, template, argp);
+
+	if(logFile)
+		if(logLevel==high)
+			_logWrite(logFile,"INFO   ", function, template, argp);
+
+	va_end(argp);
+}
+
+void _debug(const char *function, const char *template, ...)
+{
+	va_list argp;
+	va_start(argp, template);
+
+	_logWrite(stderr, "DEBUG  ", function, template, argp);
+
+	if(logFile)
+		if(logLevel==high)
+		{
+			_logWrite(logFile, "DEBUG  ", function, template, argp);
+		}
+
+	va_end(argp);
+}
+
+#ifdef __cplusplus
+}
+#endif
