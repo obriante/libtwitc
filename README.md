@@ -26,6 +26,7 @@
 	$ make
 
 and if necessary:
+
 	$ su
 	# make install
 
@@ -36,6 +37,7 @@ and if necessary:
  	
     
 ## Unistalling - Makefile (if necessary)
+
 	$ su
 	# make uninstall
 
