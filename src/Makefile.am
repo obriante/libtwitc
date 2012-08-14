@@ -24,7 +24,6 @@ AM_CPPFLAGS = \
 else
 
 AM_CPPFLAGS = \
-	-DDEBUG \
 	-DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
 	@EXTERN_DEP_CFLAGS@\
 	@libtwitc_CFLAGS@
