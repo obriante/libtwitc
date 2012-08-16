@@ -20,9 +20,18 @@
 #ifndef HTTP_H_
 #define HTTP_H_
 
-#include <string.h>
+#include <twitc/twitter.h>
+
+#define EXTENSIONFORMAT_XML			".xml"
+#define EXTENSIONFORMAT_JSON			".json"
+
+#define PROTOCOL_HTTP				"http://"
+#define PROTOCOL_HTTPS				"https://"
 
 extern	byte_t		getFileCURL	(string_t , string_t );
 extern	string_t	getPageCURL	(string_t );
+
+extern	string_t componeOAUTH_URL(const twitterURLS_t *, const ProtocolType_t, const string_t, ApiFormatType_t);
+extern	string_t componeAPI_URL(const twitterURLS_t *, const ProtocolType_t, const string_t, ApiFormatType_t);
 
 #endif /* HTTP_H_ */

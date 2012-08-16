@@ -7,6 +7,7 @@ libtwitc_a_SOURCES = \
 debug.c \
 functions.c \
 user.c \
+oauth.c \
 http.c \
 timeline.c \
 twitter.c

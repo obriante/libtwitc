@@ -12,7 +12,6 @@ Other developers: Patryk Rzucidlo ptkdev@gmail.com
 	- libcurl
 	- libxml-2.0
 	- oauth
-	- json-c
 
 * How to Generate Makefile:
 

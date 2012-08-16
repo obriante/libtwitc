@@ -23,6 +23,7 @@
 #include <twitc/user.h>
 #include <twitc/timeline.h>
 #include <twitc/http.h>
+#include <twitc/oauth.h>
 #include <twitc/twitter.h>
 
 #include <stdio.h>
@@ -36,13 +37,10 @@
 #define		CONFIG_FILE				"Config"
 #define		PREFERENCE_FILE			"Preference"
 
-#define		TWITTER_KEY			"" // USE YOUR APPLICATION KEY
-#define		TWITTER_KEY_SECRET		"" // USE YOUR APPLICATION KEY
+#define		TWITTER_KEY					"0xdBqXjFX4LBTLyoc5Dg"	// USE YOUR APPLICATION KEY
+#define		TWITTER_KEY_SECRET			"VIr57NPcgxxpJ2esI7brKGhth06EslbH0UDD3ImFB8" // USE YOUR APPLICATION KEY
 
 #define		TWC_UPDATES_URL			"https://raw.github.com/KernelMonkey/libtwitc/master/VERSION"
-
-#define		OAUTH_API_URL_DEFAULT	"https://api.twitter.com/oauth/"
-#define		HTTPS_API_URL_DEFAULT	"https://api.twitter.com/1/"
 
 string_t programDir;
 string_t configDir;
@@ -143,7 +141,7 @@ byte_t main(int argc, char *argv[])
 
 
 	//OAUTH TEST
-	twitterURLS_t *twURLS=initURLS(OAUTH_API_URL_DEFAULT, HTTPS_API_URL_DEFAULT);
+	twitterURLS_t *twURLS=initURLS(OAUTH_URL_DEFAULT, API_URL_DEFAULT, SEARCH_URL_DEFAULT, Xml);
 
 
 	if(!user)
@@ -152,7 +150,11 @@ byte_t main(int argc, char *argv[])
 
 	if(user)
 	{
-		string_t rawTimeline=getTimeline(twURLS->home_timeline_url, user );
+
+		string_t url=componeAPI_URL(twURLS, Http, HOME_TIMELINE_URL, Xml);
+
+		debug("Timeline url: %s", url);
+		string_t rawTimeline=getTimeline(url, user );
 
 		// debug("rawTimeline:\n\n%s",rawTimeline);
 
@@ -173,8 +175,6 @@ byte_t main(int argc, char *argv[])
 			uninitUser(user);
 
 	}
-
-
 
 	info("stop");
 
