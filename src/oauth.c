@@ -313,10 +313,6 @@ user_t *tokenAccess(const twitterURLS_t *twURLS, const string_t pin, const strin
 						user=initUser(id, screenName, token, secretToken, consumerKey, consumerSecretKey);
 					}
 
-					if(token)free(token);
-					if(secretToken)free(secretToken);
-					if(id)free(id);
-					if(screenName)free(screenName);
 				}
 
 				if (twitterUserKey)free(twitterUserKey);
