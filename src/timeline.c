@@ -271,6 +271,63 @@ timelineElement_t getStatus (const xmlDocPtr doc, xmlNodePtr cur)
 	return timeL;
 }
 
+timeline_t readXMLTimeLine(const string_t rawTimeline)
+{
+
+	timeline_t timeline;
+	memset(&timeline, 0x00, sizeof(timeline));
+
+	xmlDocPtr doc = xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL, XML_PARSE_COMPACT);
+
+	if (doc)
+	{
+		xmlNodePtr cur = xmlDocGetRootElement(doc);
+
+		while (cur)
+		{
+
+			if (!xmlStrcmp(cur->name, (const xmlChar *) "statuses"))
+			{
+
+				debug("cur->name: %s", cur->name);
+
+				cur = cur->xmlChildrenNode;
+
+				int i=0;
+				while (cur)
+				{
+					if ((!xmlStrcmp(cur->name, (const xmlChar *)"status")))
+					{
+						debug("cur->name: %s", cur->name);
+
+						timeline.timeline[i]=getStatus(doc, cur);
+
+						debug(" %i) [%s] @%s: %s", i, timeline.timeline[i].created_at, timeline.timeline[i].user.screen_name, timeline.timeline[i].text);
+						i++;
+					}
+
+					cur = cur->next;
+
+				}
+			}
+		}
+
+		xmlFreeDoc(doc);
+
+	}
+
+	return timeline;
+}
+
+
+timeline_t readJsonTimeLine(const string_t rawTimeline)
+{
+
+	timeline_t timeline;
+	memset(&timeline, 0x00, sizeof(timeline));
+
+	return timeline;
+}
 
 timeline_t readTimeLine(const string_t rawTimeline)
 {
@@ -280,45 +337,19 @@ timeline_t readTimeLine(const string_t rawTimeline)
 
 	if(rawTimeline)
 	{
-
-		xmlDocPtr doc = xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL, XML_PARSE_COMPACT);
-
-		if (doc)
+		if(xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL, XML_PARSE_COMPACT))
 		{
-			xmlNodePtr cur = xmlDocGetRootElement(doc);
+			debug("%s", "timeline is a XML File");
 
-			while (cur)
-			{
-
-				if (!xmlStrcmp(cur->name, (const xmlChar *) "statuses"))
-				{
-
-					debug("cur->name: %s", cur->name);
-
-					cur = cur->xmlChildrenNode;
-
-					int i=0;
-					while (cur)
-					{
-						if ((!xmlStrcmp(cur->name, (const xmlChar *)"status")))
-						{
-							debug("cur->name: %s", cur->name);
-
-							timeline.timeline[i]=getStatus(doc, cur);
-
-							debug(" %i) [%s] @%s: %s", i, timeline.timeline[i].created_at, timeline.timeline[i].user.screen_name, timeline.timeline[i].text);
-							i++;
-						}
-
-						cur = cur->next;
-
-					}
-				}
-			}
-
-			xmlFreeDoc(doc);
-
+			timeline=readXMLTimeLine(rawTimeline);
 		}
+		else
+		{
+			debug("%s", "timeline is a JSON File");
+
+			timeline=readJsonTimeLine(rawTimeline);
+		}
+
 	}
 
 	return timeline;

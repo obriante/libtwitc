@@ -158,6 +158,7 @@ byte_t main(int argc, char *argv[])
 
 		// debug("rawTimeline:\n\n%s",rawTimeline);
 
+		debug("%s",getTimeline(componeAPI_URL(twURLS, Http, HOME_TIMELINE_URL, Json), user));
 
 		timeline_t timeline=readTimeLine(rawTimeline);
 
@@ -176,7 +177,7 @@ byte_t main(int argc, char *argv[])
 
 	}
 
-	uninitURLS(twURLS);
+	if(twURLS)uninitURLS(twURLS);
 
 	info("stop");
 
