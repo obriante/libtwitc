@@ -176,6 +176,8 @@ byte_t main(int argc, char *argv[])
 
 	}
 
+	uninitURLS(twURLS);
+
 	info("stop");
 
 	uninitLog();

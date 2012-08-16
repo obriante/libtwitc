@@ -90,17 +90,14 @@ byte_t sendTweet(const twitterURLS_t *twURLS, const user_t *user, const string_t
 		debug("screenName: %s", user->screenName);
 
 
-		string_t twitterStatusURL=NULL;
-
-		/* Send Tweet with oAuth functions */
-		twitterStatusURL=componeAPI_URL(twURLS, Http, STATUSUPDATE_URL, Xml);
-
-		asprintf(&twitterStatusURL,"%s%s%s%s%s", twitterStatusURL, URL_SEP_QUES, "status", "=", oauth_url_escape(msg));
+		string_t twitterStatusURL=componeAPI_URL(twURLS, Http, STATUSUPDATE_URL, Xml);
 
 		if(twitterStatusURL)
 		{
-			debug("twitterStatusURL:\t%s", twitterStatusURL);
 
+			asprintf(&twitterStatusURL,"%s%s%s%s%s", twitterStatusURL, URL_SEP_QUES, "status", "=", oauth_url_escape(msg));
+
+			debug("twitterStatusURL:\t%s", twitterStatusURL);
 
 			if(user->id && user->screenName && user->consumerKey && user->consumerSecretKey && user->token && user->secretToken)
 			{
@@ -118,20 +115,30 @@ byte_t sendTweet(const twitterURLS_t *twURLS, const user_t *user, const string_t
 				string_t sendTweet = oauth_sign_url2(twitterStatusURL, &postarg, OA_HMAC, NULL, user->consumerKey, user->consumerSecretKey, user->token, user->secretToken);
 
 				if(postarg)
-				debug("postarg: %s", postarg);
+					debug("postarg: %s", postarg);
 
 
-				string_t error=NULL;
+				string_t output=NULL;
+
 				if(sendTweet)
-					error = oauth_http_post(sendTweet, postarg);
+					output = oauth_http_post(sendTweet, postarg);
 
-				if(!error)
-					return EXIT_FAILURE;
+				debug("output: %s",output);
+
+
+				if(output)free(output);
+				if(sendTweet)free(sendTweet);
+				if(postarg)free(postarg);
+				if(twitterStatusURL)free(twitterStatusURL);
+
+
 
 				return EXIT_SUCCESS;
 
 			}
 		}
+
+		if(twitterStatusURL)free(twitterStatusURL);
 	}
 
 	return EXIT_FAILURE;
@@ -161,13 +168,41 @@ string_t getTimeline(const string_t timelineURL, const user_t* user )
 			timeline= oauth_http_get(req_url, NULL);
 
 		}
-	}
 
+		if(req_url)free(req_url);
+	}
 
 	if(!timeline)
 		warning("Returned value: (NULL)");
 
 	return timeline;
+}
+
+
+void uninitURLS(twitterURLS_t *twURLS)
+{
+
+	if(twURLS)
+	{
+		if(twURLS->api_URL)
+			free(twURLS->api_URL);
+
+		if(twURLS->oauth_URL)
+			free(twURLS->oauth_URL);
+
+		if(twURLS->serch_URL)
+			free(twURLS->serch_URL);
+
+		twURLS->api_URL=NULL;
+		twURLS->oauth_URL=NULL;
+		twURLS->serch_URL=NULL;
+
+		free(twURLS);
+	}
+
+	warning("twitterURLS_t uninitialized");
+	twURLS=NULL;
+
 }
 
 #ifdef __cplusplus
