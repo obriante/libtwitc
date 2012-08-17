@@ -91,6 +91,7 @@ typedef struct{
 
 
 extern	timelineElement_t	getStatus		(const xmlDocPtr, xmlNodePtr);
-extern	timeline_t			readTimeLine	(const string_t );
+extern	timeline_t			readXmlTimeLine	(const string_t );
+extern	timeline_t			readJsonTimeLine	(const string_t );
 
 #endif /* TIMELINE_H_ */

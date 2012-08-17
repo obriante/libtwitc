@@ -155,9 +155,11 @@ typedef struct {
 }twitterURLS_t;
 
 
-extern	twitterURLS_t	*initURLS			(const string_t,const string_t, const string_t, const ApiFormatType_t);
-extern	byte_t			sendTweet			(const twitterURLS_t *, const user_t *, const string_t);
-extern	string_t		getTimeline			(const string_t, const user_t *);
+extern	twitterURLS_t	*initURLS		(const string_t,const string_t, const string_t, const ApiFormatType_t);
+extern	string_t		sendTweet		(const twitterURLS_t *, const user_t *, const string_t, ApiFormatType_t );
+extern	string_t		getTimeline		(const string_t, const user_t *);
+extern	void			uninitURLS		(twitterURLS_t *);
+
 
 
 #endif /* TWITTER_H_ */

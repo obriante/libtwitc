@@ -26,6 +26,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <json.h>
+
+
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -271,65 +274,8 @@ timelineElement_t getStatus (const xmlDocPtr doc, xmlNodePtr cur)
 	return timeL;
 }
 
-timeline_t readXMLTimeLine(const string_t rawTimeline)
-{
 
-	timeline_t timeline;
-	memset(&timeline, 0x00, sizeof(timeline));
-
-	xmlDocPtr doc = xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL, XML_PARSE_COMPACT);
-
-	if (doc)
-	{
-		xmlNodePtr cur = xmlDocGetRootElement(doc);
-
-		while (cur)
-		{
-
-			if (!xmlStrcmp(cur->name, (const xmlChar *) "statuses"))
-			{
-
-				debug("cur->name: %s", cur->name);
-
-				cur = cur->xmlChildrenNode;
-
-				int i=0;
-				while (cur)
-				{
-					if ((!xmlStrcmp(cur->name, (const xmlChar *)"status")))
-					{
-						debug("cur->name: %s", cur->name);
-
-						timeline.timeline[i]=getStatus(doc, cur);
-
-						debug(" %i) [%s] @%s: %s", i, timeline.timeline[i].created_at, timeline.timeline[i].user.screen_name, timeline.timeline[i].text);
-						i++;
-					}
-
-					cur = cur->next;
-
-				}
-			}
-		}
-
-		xmlFreeDoc(doc);
-
-	}
-
-	return timeline;
-}
-
-
-timeline_t readJsonTimeLine(const string_t rawTimeline)
-{
-
-	timeline_t timeline;
-	memset(&timeline, 0x00, sizeof(timeline));
-
-	return timeline;
-}
-
-timeline_t readTimeLine(const string_t rawTimeline)
+timeline_t readXmlTimeLine(const string_t rawTimeline)
 {
 
 	timeline_t timeline;
@@ -337,20 +283,122 @@ timeline_t readTimeLine(const string_t rawTimeline)
 
 	if(rawTimeline)
 	{
-		if(xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL, XML_PARSE_COMPACT))
+
+		xmlDocPtr doc = xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL, XML_PARSE_COMPACT);
+
+		if (doc)
 		{
-			debug("%s", "timeline is a XML File");
+			xmlNodePtr cur = xmlDocGetRootElement(doc);
 
-			timeline=readXMLTimeLine(rawTimeline);
+			while (cur)
+			{
+
+				if (!xmlStrcmp(cur->name, (const xmlChar *) "statuses"))
+				{
+
+					debug("cur->name: %s", cur->name);
+
+					cur = cur->xmlChildrenNode;
+
+					int i=0;
+					while (cur)
+					{
+						if ((!xmlStrcmp(cur->name, (const xmlChar *)"status")))
+						{
+							debug("cur->name: %s", cur->name);
+
+							timeline.timeline[i]=getStatus(doc, cur);
+
+							debug(" %i) [%s] @%s: %s", i, timeline.timeline[i].created_at, timeline.timeline[i].user.screen_name, timeline.timeline[i].text);
+							i++;
+						}
+
+						cur = cur->next;
+
+					}
+				}
+			}
+
+			xmlFreeDoc(doc);
+
 		}
-		else
-		{
-			debug("%s", "timeline is a JSON File");
-
-			timeline=readJsonTimeLine(rawTimeline);
-		}
-
 	}
+
+	return timeline;
+}
+
+
+
+timeline_t readJsonTimeLine(const string_t rawTimeline)
+{
+
+	int i=0;
+	timeline_t timeline;
+	memset(&timeline, 0x00, sizeof(timeline));
+
+	json_object *obj = json_tokener_parse(rawTimeline);
+
+	for(i=0; i<json_object_array_length(obj); i++)
+	{
+		asprintf(&timeline.timeline[i].created_at, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"created_at")));
+		asprintf(&timeline.timeline[i].id, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"id")));
+		asprintf(&timeline.timeline[i].text, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"text")));
+		asprintf(&timeline.timeline[i].source, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"source")));
+		asprintf(&timeline.timeline[i].truncated, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"truncated")));
+		asprintf(&timeline.timeline[i].favorited, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"favorited")));
+		asprintf(&timeline.timeline[i].in_reply_to_status_id, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"in_reply_to_status_id")));
+		asprintf(&timeline.timeline[i].in_reply_to_user_id, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"in_reply_to_user_id")));
+		asprintf(&timeline.timeline[i].in_reply_to_screen_name, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"in_reply_to_screen_name")));
+		asprintf(&timeline.timeline[i].retweet_count, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"retweet_count")));
+		asprintf(&timeline.timeline[i].retweeted, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"retweeted")));
+		asprintf(&timeline.timeline[i].geo, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"geo")));
+		asprintf(&timeline.timeline[i].coordinates, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"coordinates")));
+		asprintf(&timeline.timeline[i].place, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"place")));
+		asprintf(&timeline.timeline[i].contributors, "%s", json_object_to_json_string(json_object_object_get(json_object_array_get_idx(obj,i),"contributors")));
+
+		json_object *user=json_object_object_get(json_object_array_get_idx(obj,i),"user");
+
+		asprintf(&timeline.timeline[i].user.id, "%s", json_object_to_json_string(json_object_object_get(user,"id")));
+		asprintf(&timeline.timeline[i].user.name, "%s", json_object_to_json_string(json_object_object_get(user,"name")));
+		asprintf(&timeline.timeline[i].user.screen_name, "%s", json_object_to_json_string(json_object_object_get(user,"screen_name")));
+		asprintf(&timeline.timeline[i].user.location, "%s", json_object_to_json_string(json_object_object_get(user,"location")));
+		asprintf(&timeline.timeline[i].user.description, "%s", json_object_to_json_string(json_object_object_get(user,"description")));
+		asprintf(&timeline.timeline[i].user.profile_image_url, "%s", json_object_to_json_string(json_object_object_get(user,"profile_image_url")));
+		asprintf(&timeline.timeline[i].user.profile_image, "%s", json_object_to_json_string(json_object_object_get(user,"profile_image")));
+		asprintf(&timeline.timeline[i].user.url, "%s", json_object_to_json_string(json_object_object_get(user,"url")));
+		asprintf(&timeline.timeline[i].user.protected, "%s", json_object_to_json_string(json_object_object_get(user,"protected")));
+		asprintf(&timeline.timeline[i].user.profile_background_color, "%s", json_object_to_json_string(json_object_object_get(user,"profile_background_color")));
+		asprintf(&timeline.timeline[i].user.profile_text_color, "%s", json_object_to_json_string(json_object_object_get(user,"profile_text_color")));
+		asprintf(&timeline.timeline[i].user.profile_link_color, "%s", json_object_to_json_string(json_object_object_get(user,"profile_link_color")));
+		asprintf(&timeline.timeline[i].user.profile_sidebar_fill_color, "%s", json_object_to_json_string(json_object_object_get(user,"profile_sidebar_fill_color")));
+		asprintf(&timeline.timeline[i].user.profile_sidebar_border_color, "%s", json_object_to_json_string(json_object_object_get(user,"profile_sidebar_border_color")));
+		asprintf(&timeline.timeline[i].user.created_at, "%s", json_object_to_json_string(json_object_object_get(user,"created_at")));
+		asprintf(&timeline.timeline[i].user.utc_offset, "%s", json_object_to_json_string(json_object_object_get(user,"utc_offset")));
+		asprintf(&timeline.timeline[i].user.time_zone, "%s", json_object_to_json_string(json_object_object_get(user,"time_zone")));
+		asprintf(&timeline.timeline[i].user.profile_background_image_url, "%s", json_object_to_json_string(json_object_object_get(user,"profile_background_image_url")));
+		asprintf(&timeline.timeline[i].user.profile_background_tile, "%s", json_object_to_json_string(json_object_object_get(user,"profile_background_tile")));
+		asprintf(&timeline.timeline[i].user.profile_use_background_image, "%s", json_object_to_json_string(json_object_object_get(user,"profile_use_background_image")));
+		asprintf(&timeline.timeline[i].user.notifications, "%s", json_object_to_json_string(json_object_object_get(user,"notifications")));
+		asprintf(&timeline.timeline[i].user.geo_enabled, "%s", json_object_to_json_string(json_object_object_get(user,"geo_enabled")));
+		asprintf(&timeline.timeline[i].user.verified, "%s", json_object_to_json_string(json_object_object_get(user,"verified")));
+		asprintf(&timeline.timeline[i].user.following, "%s", json_object_to_json_string(json_object_object_get(user,"following")));
+		asprintf(&timeline.timeline[i].user.lang, "%s", json_object_to_json_string(json_object_object_get(user,"lang")));
+		asprintf(&timeline.timeline[i].user.contributors_enabled, "%s", json_object_to_json_string(json_object_object_get(user,"contributors_enabled")));
+		asprintf(&timeline.timeline[i].user.follow_request_sent, "%s", json_object_to_json_string(json_object_object_get(user,"follow_request_sent")));
+		asprintf(&timeline.timeline[i].user.show_all_inline_media, "%s", json_object_to_json_string(json_object_object_get(user,"show_all_inline_media")));
+		asprintf(&timeline.timeline[i].user.default_profile, "%s", json_object_to_json_string(json_object_object_get(user,"default_profile")));
+		asprintf(&timeline.timeline[i].user.default_profile_image, "%s", json_object_to_json_string(json_object_object_get(user,"default_profile_image")));
+		asprintf(&timeline.timeline[i].user.is_translator, "%s", json_object_to_json_string(json_object_object_get(user,"is_translator")));
+		asprintf(&timeline.timeline[i].user.followers_count, "%s", json_object_to_json_string(json_object_object_get(user,"followers_count")));
+		asprintf(&timeline.timeline[i].user.friends_count, "%s", json_object_to_json_string(json_object_object_get(user,"friends_count")));
+		asprintf(&timeline.timeline[i].user.favourites_count, "%s", json_object_to_json_string(json_object_object_get(user,"favourites_count")));
+		asprintf(&timeline.timeline[i].user.statuses_count, "%s", json_object_to_json_string(json_object_object_get(user,"statuses_count")));
+		asprintf(&timeline.timeline[i].user.listed_count, "%s", json_object_to_json_string(json_object_object_get(user,"listed_count")));
+
+		json_object_put(user);
+	}
+
+	json_object_put(obj);
 
 	return timeline;
 }

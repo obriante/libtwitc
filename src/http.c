@@ -129,6 +129,8 @@ string_t getPageCURL(string_t url)
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
 		res = curl_easy_perform(curl);
 
+
+
 		//always cleanup
 		curl_easy_cleanup(curl);
 
@@ -167,10 +169,6 @@ string_t compone_URL(const twitterURLS_t *twURLS, const ProtocolType_t protocolT
 
 	if(url)
 		debug("url: %s", url);
-
-
-	if(extension) extension=NULL;
-	if(protocol) protocol=NULL;
 
 	return url;
 }

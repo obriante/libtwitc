@@ -42,17 +42,16 @@ void checkLogFileDimension(const string_t fileName, const long maxSize)
 	}
 }
 
-void initLog(const string_t fileName, const LogLevel level, const long maxSize)
+void initLog(const string_t fileName, const long maxbyteSize)
 {
 
 	if(fileName)
 	{
 
-		checkLogFileDimension(fileName, maxSize);
+		checkLogFileDimension(fileName, maxbyteSize);
 
 		debug("fileName:\t%s",fileName);
 
-		logLevel=level;
 		logFile = fopen(fileName, "a");
 
 		if(logFile)
@@ -70,7 +69,6 @@ void uninitLog()
 		debug("Closing logFile");
 		fclose(logFile);
 		logFile=NULL;
-		logLevel=low;
 	}
 
 }
@@ -100,8 +98,7 @@ void _error(const char *function, const char *template, ...)
 	_logWrite(stderr,"ERROR  ", function, template, argp);
 
 	if(logFile)
-		if(logLevel==high || logLevel==medium || logLevel==low)
-			_logWrite(logFile,"ERROR  ", function, template, argp);
+		_logWrite(logFile,"ERROR  ", function, template, argp);
 
 
 	va_end(argp);
@@ -117,8 +114,7 @@ void _warning(const char *function, const char *template, ...)
 	_logWrite(stderr,"WARNING", function, template, argp);
 
 	if(logFile)
-		if(logLevel==high || logLevel==medium)
-			_logWrite(logFile,"WARNING", function, template, argp);
+		_logWrite(logFile,"WARNING", function, template, argp);
 
 
 	va_end(argp);
@@ -132,8 +128,7 @@ void _info(const char *function, const char *template, ...)
 	_logWrite(stderr,"INFO   ", function, template, argp);
 
 	if(logFile)
-		if(logLevel==high)
-			_logWrite(logFile,"INFO   ", function, template, argp);
+		_logWrite(logFile,"INFO   ", function, template, argp);
 
 	va_end(argp);
 }
@@ -146,10 +141,7 @@ void _debug(const char *function, const char *template, ...)
 	_logWrite(stderr, "DEBUG  ", function, template, argp);
 
 	if(logFile)
-		if(logLevel==high)
-		{
-			_logWrite(logFile, "DEBUG  ", function, template, argp);
-		}
+		_logWrite(logFile, "DEBUG  ", function, template, argp);
 
 	va_end(argp);
 }

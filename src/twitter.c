@@ -34,7 +34,7 @@
 extern "C"{
 #endif
 
-/**
+/*
  *
  *
  * @param oauth_URL
@@ -81,23 +81,27 @@ twitterURLS_t *initURLS(const string_t oauth_URL, const string_t api_URL, const 
  * Send a tweet with User-Keys (token) and TwitCrusader-Keys (token)
  *
  */
-byte_t sendTweet(const twitterURLS_t *twURLS, const user_t *user, const string_t msg)
+string_t sendTweet(const twitterURLS_t *twURLS, const user_t *user, const string_t msg, ApiFormatType_t apiFormatType)
 {
+
+	string_t output=NULL;
 
 	if(twURLS && user && msg)
 	{
 		debug("Message: %s", msg);
 		debug("screenName: %s", user->screenName);
 
+		string_t twitterStatusURL=NULL;
 
-		string_t twitterStatusURL=componeAPI_URL(twURLS, Http, STATUSUPDATE_URL, Xml);
+		/* Send Tweet with oAuth functions */
+		twitterStatusURL=componeAPI_URL(twURLS, Http, STATUSUPDATE_URL, apiFormatType);
+
+		asprintf(&twitterStatusURL,"%s%s%s%s%s", twitterStatusURL, URL_SEP_QUES, "status", "=", oauth_url_escape(msg));
 
 		if(twitterStatusURL)
 		{
-
-			asprintf(&twitterStatusURL,"%s%s%s%s%s", twitterStatusURL, URL_SEP_QUES, "status", "=", oauth_url_escape(msg));
-
 			debug("twitterStatusURL:\t%s", twitterStatusURL);
+
 
 			if(user->id && user->screenName && user->consumerKey && user->consumerSecretKey && user->token && user->secretToken)
 			{
@@ -118,30 +122,19 @@ byte_t sendTweet(const twitterURLS_t *twURLS, const user_t *user, const string_t
 					debug("postarg: %s", postarg);
 
 
-				string_t output=NULL;
-
 				if(sendTweet)
 					output = oauth_http_post(sendTweet, postarg);
 
-				debug("output: %s",output);
-
-
-				if(output)free(output);
-				if(sendTweet)free(sendTweet);
-				if(postarg)free(postarg);
-				if(twitterStatusURL)free(twitterStatusURL);
-
-
-
-				return EXIT_SUCCESS;
-
 			}
 		}
-
-		if(twitterStatusURL)free(twitterStatusURL);
 	}
 
-	return EXIT_FAILURE;
+	if(!output)
+		warning("Returned value: (NULL)");
+	else
+		debug("output: %s", output);
+
+	return output;
 }
 
 
@@ -168,9 +161,8 @@ string_t getTimeline(const string_t timelineURL, const user_t* user )
 			timeline= oauth_http_get(req_url, NULL);
 
 		}
-
-		if(req_url)free(req_url);
 	}
+
 
 	if(!timeline)
 		warning("Returned value: (NULL)");

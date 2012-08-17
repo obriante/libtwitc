@@ -33,18 +33,9 @@
 #define warning(template, ...)	_warning(__FUNCTION__, template, ## __VA_ARGS__)
 #define error(template, ...)	_error(__FUNCTION__, template, ## __VA_ARGS__)
 
-typedef enum
-{
-high,
-medium,
-low
-}LogLevel;
-
 static FILE *logFile=NULL;
-static LogLevel logLevel=low;
 
-
-extern	void	initLog		(const string_t, const LogLevel, const long);
+extern	void	initLog		(const string_t, const long);
 extern	void	uninitLog	(	);
 
 extern	void	_warning	(const char * , const char *, ...);
