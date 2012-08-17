@@ -12,22 +12,25 @@ Other developers: Patryk Rzucidlo ptkdev@gmail.com
 	- libcurl
 	- libxml-2.0
 	- oauth
+	- json-c
 
 * How to Generate Makefile:
 
 	$ ./autogen.sh
   or
-    $ sh autogen.sh
+
+	$ sh autogen.sh
 
 
 * Compile - Makefile:
     
- 	$ ./configure
-    $ make 	
+	$ ./configure
+	$ make 	
 
 and if necessary:
-    $ su
-    # make install
+
+	$ su
+	# make install
 
  
  * To enable Debug option on Compiling process:
@@ -36,8 +39,9 @@ and if necessary:
  	
     
 * Unistalling - Makefile (if necessary)
-    $ su
-    # make uninstall
+
+	$ su
+	# make uninstall
 
 * To clean directory
  
