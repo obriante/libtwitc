@@ -96,39 +96,42 @@ string_t sendTweet(const twitterURLS_t *twURLS, const user_t *user, const string
 		/* Send Tweet with oAuth functions */
 		twitterStatusURL=componeAPI_URL(twURLS, Http, STATUSUPDATE_URL, apiFormatType);
 
-		asprintf(&twitterStatusURL,"%s%s%s%s%s", twitterStatusURL, URL_SEP_QUES, "status", "=", oauth_url_escape(msg));
-
-		if(twitterStatusURL)
+		string_t tweet=oauth_url_escape(msg);
+		if(tweet)
 		{
-			debug("twitterStatusURL:\t%s", twitterStatusURL);
+			asprintf(&twitterStatusURL,"%s%s%s%s%s", twitterStatusURL, URL_SEP_QUES, "status", "=", tweet);
 
-
-			if(user->id && user->screenName && user->consumerKey && user->consumerSecretKey && user->token && user->secretToken)
+			if(twitterStatusURL)
 			{
-
-				/*DEBUG*/
-				debug("user->screenName:\t%s",user->screenName);
-				debug("user->id",user->id);
-				debug("user->consumerKey",user->consumerKey);
-				debug("user->consumerSecretKey",user->consumerSecretKey);
-				debug("user->token",user->token);
-				debug("user->secretToken",user->secretToken);
+				debug("twitterStatusURL:\t%s", twitterStatusURL);
 
 
-				string_t postarg = NULL;
-				string_t sendTweet = oauth_sign_url2(twitterStatusURL, &postarg, OA_HMAC, NULL, user->consumerKey, user->consumerSecretKey, user->token, user->secretToken);
+				if(user->id && user->screenName && user->consumerKey && user->consumerSecretKey && user->token && user->secretToken)
+				{
 
-				if(postarg)
-					debug("postarg: %s", postarg);
+					/*DEBUG*/
+					debug("user->screenName:\t%s",user->screenName);
+					debug("user->id",user->id);
+					debug("user->consumerKey",user->consumerKey);
+					debug("user->consumerSecretKey",user->consumerSecretKey);
+					debug("user->token",user->token);
+					debug("user->secretToken",user->secretToken);
 
 
-				if(sendTweet)
-					output = oauth_http_post(sendTweet, postarg);
+					string_t postarg = NULL;
+					string_t sendTweet = oauth_sign_url2(twitterStatusURL, &postarg, OA_HMAC, NULL, user->consumerKey, user->consumerSecretKey, user->token, user->secretToken);
 
+					if(postarg)
+						debug("postarg: %s", postarg);
+
+
+					if(sendTweet)
+						output = oauth_http_post(sendTweet, postarg);
+
+				}
 			}
 		}
 	}
-
 	if(!output)
 		warning("Returned value: (NULL)");
 	else

@@ -151,19 +151,6 @@ byte_t main(int argc, char *argv[])
 	if(user)
 	{
 
-
-		timeline_t TimelineXml=readXmlTimeLine(getTimeline(componeAPI_URL(twURLS, Http, HOME_TIMELINE_URL, Xml), user ));
-		onTimelineReading(&TimelineXml);
-
-
-
-		timeline_t TimelineJson=readJsonTimeLine(getTimeline(componeAPI_URL(twURLS, Http, HOME_TIMELINE_URL, Json), user));
-		onTimelineReading(&TimelineJson);
-
-
-		string_t msg="Test d'invio tramite libtwitc..";
-		info("Tweet: %s", msg);
-
 		if(sendTweet(twURLS, user, "Test d'invio tramite libtwitc usando Xml", Xml))
 			info("XML Message correctly tweetted!");
 		else
@@ -173,6 +160,18 @@ byte_t main(int argc, char *argv[])
 			info("Json Message correctly tweetted!");
 		else
 			info("Json Message not tweetted!");
+
+
+		string_t url=componeAPI_URL(twURLS, Http, HOME_TIMELINE_URL, Xml);
+
+		timeline_t TimelineXml=readXmlTimeLine(getTimeline(url, user ));
+		onTimelineReading(&TimelineXml);
+
+		url=componeAPI_URL(twURLS, Http, HOME_TIMELINE_URL, Json);
+
+		timeline_t TimelineJson=readJsonTimeLine(getTimeline(url, user));
+		onTimelineReading(&TimelineJson);
+
 
 		if(user)
 			uninitUser(user);
