@@ -1,6 +1,7 @@
-* JSON requests / parsing support - (JSONC is a C library for JSON ) [request by  4ndreaSt4gi  (Andrea Stagi) ]
+
+* JSON requests / parsing support with json-c [requested by  4ndreaSt4gi]
 
 
 * Code documentation
 
-* New Functions
+* Not implemeneted Functions
