@@ -32,7 +32,8 @@ and if necessary:
 	# make install
 
  
-## To enable Debug option on Compiling process:
+## Enable Debug option:
+on Compiling process:
  	
 	$ ./configure --enable-debug
  	
