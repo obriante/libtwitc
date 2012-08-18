@@ -37,8 +37,8 @@
 #define		CONFIG_FILE				"Config"
 #define		PREFERENCE_FILE			"Preference"
 
-#define		TWITTER_KEY					"0xdBqXjFX4LBTLyoc5Dg"	// USE YOUR APPLICATION KEY
-#define		TWITTER_KEY_SECRET			"VIr57NPcgxxpJ2esI7brKGhth06EslbH0UDD3ImFB8" // USE YOUR APPLICATION KEY
+#define		TWITTER_KEY					""	// USE YOUR APPLICATION KEY
+#define		TWITTER_KEY_SECRET			"" // USE YOUR APPLICATION KEY
 
 #define		TWC_UPDATES_URL			"https://raw.github.com/KernelMonkey/libtwitc/master/VERSION"
 
@@ -99,18 +99,24 @@ user_t *autentication(twitterURLS_t *twURLS, string_t fileName)
 }
 
 
-byte_t onTimelineReading(timeline_t *timeline){
+void onStatusReading(status_t *status)
+{
+	if(status->created_at && status->user.screen_name && status->text)
+		fprintf(stdout,"\t[%s] @%s: %s\n", status->created_at, status->user.screen_name, status->text);
+}
+
+void onTimelineReading(timeline_t *timeline)
+{
 
 	int i=0;
 	for(i=0; i<MAX_NUM_TWEETS; i++)
 	{
-		if(timeline->timeline[i].created_at && timeline->timeline[i].user.screen_name && timeline->timeline[i].text)
-			fprintf(stdout,"%i)\t[%s] @%s: %s\n", i+1, timeline->timeline[i].created_at, timeline->timeline[i].user.screen_name, timeline->timeline[i].text);
+		printf("%i)", i+1);
+		onStatusReading(&timeline->statuses[i]);
 
 
 	}
 
-	return EXIT_SUCCESS;
 }
 
 byte_t main(int argc, char *argv[])
@@ -122,6 +128,7 @@ byte_t main(int argc, char *argv[])
 	initProgramPath();
 
 	//VERSION CHECK
+
 
 	string_t  version=getPageCURL(TWC_UPDATES_URL);
 
@@ -150,26 +157,31 @@ byte_t main(int argc, char *argv[])
 
 	if(user)
 	{
+		string_t rawStatus=NULL;
 
-		if(sendTweet(twURLS, user, "Test d'invio tramite libtwitc usando Xml", Xml))
+		rawStatus=updateStatus(twURLS, user, "Test d'invio tramite libtwitc usando Xml", Xml);
+		if(rawStatus)
+		{
 			info("XML Message correctly tweetted!");
+			status_t status=getXmlStatus(rawStatus);
+			onStatusReading(&status);
+		}
 		else
 			info("XML Message not tweetted!");
 
-		if(sendTweet(twURLS, user, "Test d'invio tramite libtwitc usando Json", Json))
+		rawStatus=updateStatus(twURLS, user, "Test d'invio tramite libtwitc usando Json", Json);
+		if(rawStatus)
+		{
 			info("Json Message correctly tweetted!");
+		}
 		else
 			info("Json Message not tweetted!");
 
 
-		string_t url=componeAPI_URL(twURLS, Http, HOME_TIMELINE_URL, Xml);
-
-		timeline_t TimelineXml=readXmlTimeLine(getTimeline(url, user ));
+		timeline_t TimelineXml=readXmlTimeLine(getRawTimeline(twURLS, home_timeline, Xml, user ));
 		onTimelineReading(&TimelineXml);
 
-		url=componeAPI_URL(twURLS, Http, HOME_TIMELINE_URL, Json);
-
-		timeline_t TimelineJson=readJsonTimeLine(getTimeline(url, user));
+		timeline_t TimelineJson=readJsonTimeLine(getRawTimeline(twURLS, home_timeline, Json, user));
 		onTimelineReading(&TimelineJson);
 
 

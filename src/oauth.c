@@ -22,7 +22,7 @@
 #include <twitc/stdredef.h>
 #include <twitc/debug.h>
 #include <twitc/http.h>
-#include <twitc/twitter.h>
+#include <twitc/oauth.h>
 
 #include <oauth.h>
 

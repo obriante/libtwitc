@@ -24,6 +24,8 @@
 
 #include <twitc/stdredef.h>
 #include <twitc/twitter.h>
+#include <twitc/user.h>
+
 
 extern	string_t
 tokenRequest		(const twitterURLS_t *,

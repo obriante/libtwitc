@@ -1,6 +1,7 @@
 
 * JSON requests / parsing support with json-c [requested by  4ndreaSt4gi]
-
+	|
+	\---> Parser with different fields order don't work!
 
 * Code documentation
 

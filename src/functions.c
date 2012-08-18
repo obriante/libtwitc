@@ -20,7 +20,6 @@
 #include <twitc/debug.h>
 #include <twitc/stdredef.h>
 #include <twitc/functions.h>
-#include <twitc/http.h>
 
 #include <stdio.h>
 #include <stdlib.h>

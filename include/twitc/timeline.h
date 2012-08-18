@@ -23,7 +23,11 @@
 
 #include <twitc/stdredef.h>
 
+#include <twitc/twitter.h>
+
 #include <libxml/xmlreader.h>
+
+#include <json.h>
 
 #define		MAX_NUM_TWEETS	20
 
@@ -83,15 +87,33 @@ typedef struct{
 	string_t coordinates;
 	string_t place;
 	string_t contributors;
-}timelineElement_t;
+}status_t;
+
+
+typedef enum{
+home_timeline,
+public_timeline,
+featured,
+friends_timeline,
+mentions,
+user_timeline
+}timelineType_t;
 
 typedef struct{
-	timelineElement_t timeline[MAX_NUM_TWEETS];
+	status_t statuses[MAX_NUM_TWEETS];
+	timelineType_t  type;
 }timeline_t;
 
+extern	status_t			getXmlStatus		(const string_t);
+extern	status_t			getJsonStatus		(const string_t);
+extern	status_t			getRawStatus		(const string_t);
 
-extern	timelineElement_t	getStatus		(const xmlDocPtr, xmlNodePtr);
-extern	timeline_t			readXmlTimeLine	(const string_t );
-extern	timeline_t			readJsonTimeLine	(const string_t );
+extern	string_t			updateStatus			(const twitterURLS_t *, const user_t *, const string_t, ApiFormatType_t );
+
+extern	string_t 			getRawTimeline		(const twitterURLS_t *, timelineType_t, ApiFormatType_t, const user_t*);
+
+extern	timeline_t			readXmlTimeLine		(const string_t);
+extern	timeline_t			readJsonTimeLine	(const string_t);
+extern	timeline_t			readRawTimeLine		(const string_t);
 
 #endif /* TIMELINE_H_ */
