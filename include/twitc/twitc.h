@@ -24,6 +24,7 @@
 #include <twitc/debug.h>
 #include <twitc/functions.h>
 #include <twitc/http.h>
+#include <twitc/oauth.h>
 #include <twitc/timeline.h>
 #include <twitc/twitter.h>
 

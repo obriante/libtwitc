@@ -17,13 +17,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <twitc/debug.h>
-#include <twitc/stdredef.h>
-#include <twitc/functions.h>
-#include <twitc/user.h>
-#include <twitc/timeline.h>
-#include <twitc/http.h>
-#include <twitc/twitter.h>
+#include <twitc/twitc.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,13 +30,10 @@
 #define		CONFIG_FILE				"Config"
 #define		PREFERENCE_FILE			"Preference"
 
-#define		TWITTER_KEY			"" // USE YOUR APPLICATION KEY
-#define		TWITTER_KEY_SECRET		"" // USE YOUR APPLICATION KEY
+#define		TWITTER_KEY					""	// USE YOUR APPLICATION KEY
+#define		TWITTER_KEY_SECRET			"" // USE YOUR APPLICATION KEY
 
 #define		TWC_UPDATES_URL			"https://raw.github.com/KernelMonkey/libtwitc/master/VERSION"
-
-#define		OAUTH_API_URL_DEFAULT	"https://api.twitter.com/oauth/"
-#define		HTTPS_API_URL_DEFAULT	"https://api.twitter.com/1/"
 
 string_t programDir;
 string_t configDir;
@@ -101,29 +92,36 @@ user_t *autentication(twitterURLS_t *twURLS, string_t fileName)
 }
 
 
-byte_t onTimelineReading(timeline_t *timeline){
+void onStatusReading(status_t *status)
+{
+	if(status->created_at && status->user.screen_name && status->text)
+		fprintf(stdout,"\t[%s] @%s: %s\n", status->created_at, status->user.screen_name, status->text);
+}
+
+void onTimelineReading(timeline_t *timeline)
+{
 
 	int i=0;
 	for(i=0; i<MAX_NUM_TWEETS; i++)
 	{
-		if(timeline->timeline[i].created_at && timeline->timeline[i].user.screen_name && timeline->timeline[i].text)
-			fprintf(stdout,"%i)\t[%s] @%s: %s\n", i+1, timeline->timeline[i].created_at, timeline->timeline[i].user.screen_name, timeline->timeline[i].text);
+		printf("%i)", i+1);
+		onStatusReading(&timeline->statuses[i]);
 
 
 	}
 
-	return EXIT_SUCCESS;
 }
 
 byte_t main(int argc, char *argv[])
 {
 
-	initLog("/tmp/test.log", high, 1024);
+	initLog("/tmp/test.log", (1024*1000));
 	info("start");
 
 	initProgramPath();
 
 	//VERSION CHECK
+
 
 	string_t  version=getPageCURL(TWC_UPDATES_URL);
 
@@ -143,7 +141,7 @@ byte_t main(int argc, char *argv[])
 
 
 	//OAUTH TEST
-	twitterURLS_t *twURLS=initURLS(OAUTH_API_URL_DEFAULT, HTTPS_API_URL_DEFAULT);
+	twitterURLS_t *twURLS=initURLS(OAUTH_URL_DEFAULT, API_URL_DEFAULT, SEARCH_URL_DEFAULT);
 
 
 	if(!user)
@@ -152,22 +150,21 @@ byte_t main(int argc, char *argv[])
 
 	if(user)
 	{
-		string_t rawTimeline=getTimeline(twURLS->home_timeline_url, user );
+		string_t rawStatus=NULL;
 
-		// debug("rawTimeline:\n\n%s",rawTimeline);
-
-
-		timeline_t timeline=readTimeLine(rawTimeline);
-
-		onTimelineReading(&timeline);
-
-		string_t msg="Test d'invio tramite libtwitc..";
-		info("Tweet: %s", msg);
-
-		if(!sendTweet(twURLS, user, msg))
+		rawStatus=updateStatus(twURLS, user, "Test d'invio tramite libtwitc!");
+		if(rawStatus)
+		{
 			info("Message correctly tweetted!");
+			status_t status=getStatus(rawStatus);
+			onStatusReading(&status);
+		}
 		else
 			info("Message not tweetted!");
+
+
+		timeline_t timeline=readTimeLine(getRawTimeline(twURLS, home_timeline, user ));
+		onTimelineReading(&timeline);
 
 		if(user)
 			uninitUser(user);
@@ -175,6 +172,7 @@ byte_t main(int argc, char *argv[])
 	}
 
 
+	if(twURLS)uninitURLS(twURLS);
 
 	info("stop");
 

@@ -8,6 +8,7 @@ debug.c \
 functions.c \
 user.c \
 http.c \
+oauth.c \
 timeline.c \
 twitter.c
 
