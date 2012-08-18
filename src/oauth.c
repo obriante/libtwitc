@@ -24,7 +24,10 @@
 #include <twitc/http.h>
 #include <twitc/oauth.h>
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <oauth.h>
+
 
 /*
  * This function split url-parameters with delimiter char
@@ -61,6 +64,8 @@ string_t
 tokenRequest(const twitterURLS_t *twURLS, const string_t c_key, const string_t c_secret)
 {
 
+	string_t tempKeyParameters=NULL;
+
 	if(twURLS && c_key && c_secret)
 	{
 
@@ -76,22 +81,26 @@ tokenRequest(const twitterURLS_t *twURLS, const string_t c_key, const string_t c
 		{
 			debug("req_url:\t%s",req_url);
 
-			string_t tempKeyParameters = oauth_http_get(req_url, postarg);
+			tempKeyParameters = oauth_http_get(req_url, postarg);
 
 			if(tempKeyParameters)
-			{
 				debug("tempKeyParameters:\t%s",tempKeyParameters);
 
-				return tempKeyParameters;
-			}
 		}
+
+		if(req_url)free(req_url);
+		if(postarg)free(postarg);
+
+		req_url=NULL;
+		postarg=NULL;
 	}
 
-	warning("Returned value: (NULL)");
-	return NULL;
+	if(!tempKeyParameters)
+		warning("Returned value: (NULL)");
+
+	return tempKeyParameters;
 
 }
-
 
 
 /*
@@ -103,9 +112,7 @@ tokenRequest(const twitterURLS_t *twURLS, const string_t c_key, const string_t c
 string_t
 tokenTemp(const twitterURLS_t * twURLS, const string_t twitterKey, const string_t twitterKeySecret)
 {
-
-	int rc;
-	string_t *rv=NULL;
+	string_t tmpToken=NULL;
 
 	/*
 	 * @Input: TwitCrusader Consumer-Key
@@ -119,7 +126,8 @@ tokenTemp(const twitterURLS_t * twURLS, const string_t twitterKey, const string_
 		debug("tempKeyURL:\t%s", tempKeyURL);
 
 		/* split url and get Temp-Key */
-		rc = oauth_split_url_parameters(tempKeyURL, &rv);
+		string_t *rv=NULL;
+		int rc = oauth_split_url_parameters(tempKeyURL, &rv);
 		string_t tempKey = getParameters(rv, rc, "oauth_token");
 
 		if(tempKey)
@@ -132,16 +140,22 @@ tokenTemp(const twitterURLS_t * twURLS, const string_t twitterKey, const string_
 			 */
 			string_t tmpToken;
 			asprintf(&tmpToken, "%s%s%s%s%s", tempKeyURL, "&c_key=", twitterKey, "&c_key_secret=", twitterKeySecret);
+
 			if(tmpToken)
-			{
 				debug("tmpToken:\t%s", tmpToken);
 
-				return tmpToken;
-			}
+
 		}
+
+		if(tempKey) free(tempKey);
+		tempKey=NULL;
+
 	}
-	warning("Returned value: (NULL)");
-	return NULL;
+
+	if(!tmpToken)
+		warning("Returned value: (NULL)");
+
+	return tmpToken;
 }
 
 
@@ -155,14 +169,8 @@ tokenTemp(const twitterURLS_t * twURLS, const string_t twitterKey, const string_
 string_t tokenTempBrowser(const twitterURLS_t * twURLS, const string_t twitterKey, const string_t twitterKeySecret )
 {
 
-	int rc;
-	string_t *rv=NULL;
+	string_t  tmpToken=NULL;
 
-	/*
-	 * @Input: TwitCrusader Consumer-Key
-	 * @Return Url-Parameters with Consumer-Temp-Key and Consumer-Temp-Key-Secret
-	 *
-	 */
 	string_t tempKeyURL = tokenRequest(twURLS, twitterKey, twitterKeySecret);
 
 	if(tempKeyURL)
@@ -170,7 +178,8 @@ string_t tokenTempBrowser(const twitterURLS_t * twURLS, const string_t twitterKe
 		debug("tempKeyURL:\t%s",tempKeyURL);
 
 		/* split url and get Temp-Key */
-		rc = oauth_split_url_parameters(tempKeyURL, &rv);
+		string_t *rv=NULL;
+		int rc = oauth_split_url_parameters(tempKeyURL, &rv);
 		string_t tempKey = getParameters(rv, rc, "oauth_token");
 
 		if(tempKey)
@@ -181,8 +190,6 @@ string_t tokenTempBrowser(const twitterURLS_t * twURLS, const string_t twitterKe
 			 * Save all Twitter-Key at /tmp folder
 			 * Temp-Key + Temp-Key-Secret + TwitCrusader Key + TwitCrusader Key Secret
 			 */
-			char* tmpToken;
-
 			asprintf(&tmpToken, "%s%s%s%s%s", tempKeyURL, "&c_key=", twitterKey, "&c_key_secret=", twitterKeySecret);
 
 			if(tmpToken)
@@ -190,29 +197,35 @@ string_t tokenTempBrowser(const twitterURLS_t * twURLS, const string_t twitterKe
 				debug("tmpToken:\t%s",tmpToken);
 
 				/* Generate a Twitter-URL for get user-PIN */
-				string_t cmd=NULL;
-				string_t url=NULL;
-
 				string_t req_url=componeOAUTH_URL(twURLS, Https, AUTHORIZE_URL, None);
 
+				string_t url=NULL;
 				asprintf(&url,"%s%s%s%s%s", req_url, URL_SEP_QUES, "oauth_token","=",tempKey);
 
+				string_t cmd=NULL;
 				asprintf(&cmd, "xdg-open \"%s\"", url);
 				if(cmd)
 				{
 					debug("cmd:\t%s", cmd);
-
-					/* Open URL and user get PIN */
 					system(cmd);
 
-					return tmpToken;
+					if(cmd)free(cmd);
+					cmd=NULL;
 				}
+
+				if(req_url)free(req_url);
+				if(url)free(url);
+
+				req_url=NULL;
+				url=NULL;
 			}
 		}
 	}
 
-	warning("Returned value: (NULL)");
-	return NULL;
+	if(!tmpToken)
+		warning("Returned value: (NULL)");
+
+	return tmpToken;
 }
 
 
@@ -226,16 +239,14 @@ string_t tokenTempBrowser(const twitterURLS_t * twURLS, const string_t twitterKe
 user_t *tokenAccess(const twitterURLS_t *twURLS, const string_t pin, const string_t tmpToken)
 {
 
-	string_t *rv=NULL;
-
-	debug("tmpToken:\t%s", tmpToken);
-	debug("pin:\t%s", pin);
+	user_t *user=NULL;
 
 	if(twURLS && pin && tmpToken)
 	{
 		debug("tmpToken:\t%s", tmpToken);
 		debug("pin:\t%s", pin);
 
+		string_t *rv=NULL;
 		int rc = oauth_split_url_parameters(tmpToken, &rv);
 
 		string_t tempKey=getParameters(rv, rc, "oauth_token");
@@ -255,7 +266,6 @@ user_t *tokenAccess(const twitterURLS_t *twURLS, const string_t pin, const strin
 			 * All keys are saved in /tmp/token file
 			 */
 			string_t accessURL=componeOAUTH_URL(twURLS, Https, ACCESS_TOKEN_URL, None);
-
 			asprintf(&accessURL,"%s%s%s%s%s", accessURL, URL_SEP_QUES, "oauth_verifier","=",pin);
 
 			if(accessURL)
@@ -293,15 +303,28 @@ user_t *tokenAccess(const twitterURLS_t *twURLS, const string_t pin, const strin
 						debug("secretToken:\t%s", secretToken);
 
 
-						user_t *user=initUser(id, screenName, token, secretToken, consumerKey, consumerSecretKey);
+						user=initUser(id, screenName, token, secretToken, consumerKey, consumerSecretKey);
 
-						return user;
+
 					}
 				}
+
+				if(accessURL)free(accessURL);
+				if(postarg)free(postarg);
+				if(verifyPIN)free(verifyPIN);
+				if(twitterUserKey)free(twitterUserKey);
+
+				twitterUserKey=NULL;
+				accessURL=NULL;
+				postarg=NULL;
+				verifyPIN=NULL;
+
 			}
 		}
 	}
 
-	warning("Returned value: (NULL)");
-	return NULL;
+	if(!user)
+		warning("Returned value: (NULL)");
+
+	return user;
 }

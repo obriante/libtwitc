@@ -349,7 +349,13 @@ string_t getRawTimeline(const twitterURLS_t *twURLS, timelineType_t timelineType
 			timeline= oauth_http_get(req_url, NULL);
 
 		}
+
+		if(req_url)free(req_url);
+		req_url=NULL;
 	}
+
+	if(url)free(url);
+	url=NULL;
 
 
 	if(!timeline)
@@ -424,15 +430,16 @@ string_t updateStatus(const twitterURLS_t *twURLS, const user_t *user, const str
 		debug("Message: %s", msg);
 		debug("screenName: %s", user->screenName);
 
-		string_t twitterStatusURL=NULL;
+		string_t url=NULL;
 
 		/* Send Tweet with oAuth functions */
-		twitterStatusURL=componeAPI_URL(twURLS, Http, STATUSUPDATE_URL, Xml);
+		url=componeAPI_URL(twURLS, Http, STATUSUPDATE_URL, Xml);
 
 		string_t tweet=oauth_url_escape(msg);
 		if(tweet)
 		{
-			asprintf(&twitterStatusURL,"%s%s%s%s%s", twitterStatusURL, URL_SEP_QUES, "status", "=", tweet);
+			string_t twitterStatusURL=NULL;
+			asprintf(&twitterStatusURL,"%s%s%s%s%s", url, URL_SEP_QUES, "status", "=", tweet);
 
 			if(twitterStatusURL)
 			{
@@ -461,9 +468,26 @@ string_t updateStatus(const twitterURLS_t *twURLS, const user_t *user, const str
 					if(sendTweet)
 						output = oauth_http_post(sendTweet, postarg);
 
+					if(sendTweet)free(sendTweet);
+					if(postarg)free(postarg);
+
+					sendTweet=NULL;
+					postarg=NULL;
+
 				}
 			}
+
+			if(twitterStatusURL)free(twitterStatusURL);
+			twitterStatusURL=NULL;
+
 		}
+		if(tweet)free(tweet);
+		if(url)free(url);
+
+		tweet=NULL;
+		url=NULL;
+
+
 	}
 	if(!output)
 		warning("Returned value: (NULL)");
