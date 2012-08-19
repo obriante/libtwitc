@@ -1,4 +1,4 @@
-/*
+/* 
  * libtwitc - C Support Library for Twitter
  * Copyright (C) 2012 Orazio Briante orazio.briante@hotmail.it
  *
@@ -26,110 +26,111 @@
 #include <string.h>
 
 #ifdef __cplusplus
-extern "C"{
+extern "C"
+  {
 #endif
 
-byte_t createDirectory(string_t dirName)
+byte_t
+createDirectory(string_t dirName)
 {
 
+  if (dirName)
+    {
+      if (mkdir(dirName, 0777))
+        return EXIT_SUCCESS;
 
-	if(dirName)
-	{
-		if(mkdir(dirName,0777))return EXIT_SUCCESS;
+    }
 
-
-	}
-
-	return EXIT_FAILURE;
+  return EXIT_FAILURE;
 
 }
 
-string_t readRawTextFile(const string_t fileName)
+string_t
+readRawTextFile(const string_t fileName)
 {
-	if(fileName)
-	{
-		FILE *fp=fopen(fileName, "r" );
+  if (fileName)
+    {
+      FILE *fp = fopen(fileName, "r");
 
-		if(fp)
-		{
+      if (fp)
+        {
 
-			fseek(fp, 0L, SEEK_END);
-			int sz = ftell(fp);
-			rewind(fp);
+          fseek(fp, 0L, SEEK_END);
+          int sz = ftell(fp);
+          rewind(fp);
 
-			string_t buffer=(string_t )malloc(sz);
+          string_t buffer = (string_t) malloc(sz);
 
-			fread(buffer,sz,1,fp);
-			fclose(fp);
+          fread(buffer, sz, 1, fp);
+          fclose(fp);
 
-			return buffer;
-		}
+          return buffer;
+        }
 
+    }
 
-	}
-
-	warning("Returned value: (NULL)");
-	return NULL;
+  warning("Returned value: (NULL)");
+  return NULL ;
 }
 
-
-void removeFile(const string_t fileName)
+void
+removeFile(const string_t fileName)
 {
-	if(remove( fileName ))
-		error( "Can't delete: %s", fileName );
-	else
-		info( "%s successfully deleted.", fileName );
+  if (remove(fileName))
+    error("Can't delete: %s", fileName);
+  else
+    info("%s successfully deleted.", fileName);
 }
 
-
-byte_t initFileLock(const string_t fileName)
+byte_t
+initFileLock(const string_t fileName)
 {
-	if(fileName)
-	{
+  if (fileName)
+    {
 
-		FILE *fp=fopen(fileName, "r");
+      FILE *fp = fopen(fileName, "r");
 
-		if(!fp)
-		{
-			fp=fopen(fileName, "w");
+      if (!fp)
+        {
+          fp = fopen(fileName, "w");
 
-			if(fp)
-			{
-				fclose(fp);
-				return EXIT_SUCCESS;
-			}
+          if (fp)
+            {
+              fclose(fp);
+              return EXIT_SUCCESS;
+            }
 
-		}
-		else
-			fclose(fp);
-	}
+        }
+      else
+        fclose(fp);
+    }
 
-	return EXIT_FAILURE;
+  return EXIT_FAILURE;
 }
 
-
-long checkFileSize(const string_t fileName)
+long
+checkFileSize(const string_t fileName)
 {
 
-	if(fileName)
-	{
+  if (fileName)
+    {
 
-		FILE *fp=fopen(fileName, "r");
+      FILE *fp = fopen(fileName, "r");
 
-		if(fp)
-		{
-			fseek(fp, 0L, SEEK_END);
-			long sz = ftell(fp);
-			rewind(fp);
+      if (fp)
+        {
+          fseek(fp, 0L, SEEK_END);
+          long sz = ftell(fp);
+          rewind(fp);
 
-			fclose(fp);
+          fclose(fp);
 
-			return sz;
-		}
+          return sz;
+        }
 
-	}
+    }
 
-	return -1;
+  return -1;
 }
 
 #ifdef __cplusplus

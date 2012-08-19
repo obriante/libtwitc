@@ -24,7 +24,6 @@
 #include <twitc/stdredef.h>
 #include <twitc/user.h>
 
-
 #define  MAX_TIMELINE_TWEET_COUNT	200
 
 /* Miscellaneous data used to build twitter URLs*/
@@ -42,14 +41,11 @@
 #define INCRETWEETS					"include_rts true"
 #define COUNT						"count "
 
-
-
 /* default url*/
 
 #define OAUTH_URL_DEFAULT			"api.twitter.com/oauth/"
 #define API_URL_DEFAULT				"api.twitter.com/1/"
 #define SEARCH_URL_DEFAULT			"search.twitter.com/search"
-
 
 /* OAUTH URL */
 #define REQTOKEN_URL				"request_token"
@@ -57,7 +53,6 @@
 #define ACCESS_TOKEN_URL			"access_token"
 
 /* Search URLs */
-
 
 /* Status URLs */
 #define STATUSUPDATE_URL			"statuses/update"
@@ -118,33 +113,31 @@
 #define TRENDSWEEKLY_URL			"trends/weekly"
 #define TRENDSAVAILABLE_URL			"trends/available"
 
+typedef enum
+{
+  Xml, None
+} ApiFormatType_t;
 
 typedef enum
 {
-	Xml,
-	None
-}ApiFormatType_t;
+  Http, Https
+} ProtocolType_t;
 
 typedef enum
 {
-	Http,
-	Https
-}ProtocolType_t;
+  GET, POST
+} methodType_t;
 
-typedef enum
+typedef struct
 {
-	GET,
-	POST
-}methodType_t;
+  string_t oauth_URL;
+  string_t api_URL;
+  string_t serch_URL;
+} twitterURLS_t;
 
-typedef struct {
-	string_t	oauth_URL;
-	string_t	api_URL;
-	string_t	serch_URL;
-}twitterURLS_t;
-
-extern	twitterURLS_t	*initURLS			(const string_t,const string_t, const string_t);
-extern	void			uninitURLS			(twitterURLS_t *);
-
+extern twitterURLS_t *
+initURLS(const string_t, const string_t, const string_t);
+extern void
+uninitURLS(twitterURLS_t *);
 
 #endif /* TWITTER_H_ */

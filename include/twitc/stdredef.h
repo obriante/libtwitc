@@ -22,22 +22,21 @@
 
 #ifdef __cplusplus
 extern "C"
-{  /* only need to export C interface if used by C++ source code#endif */
+  { /* only need to export C interface if used by C++ source code#endif */
 #endif
 
-typedef	 unsigned	char			byte_t;
-typedef	 unsigned	short			word_t;
-typedef	 unsigned	long			dword_t;
-typedef				void*			voidPtr_t;
-typedef				char*			string_t;
-typedef				struct timeval	timeval_t;
-typedef				struct termios	termios_t;
-typedef 			struct tm		tm_t;
-typedef				struct passwd	passwd_t;
-
+typedef unsigned char byte_t;
+typedef unsigned short word_t;
+typedef unsigned long dword_t;
+typedef void *voidPtr_t;
+typedef char *string_t;
+typedef struct timeval timeval_t;
+typedef struct termios termios_t;
+typedef struct tm tm_t;
+typedef struct passwd passwd_t;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* STDREDEF_H_ */
+#endif				/* STDREDEF_H_ */

@@ -28,5 +28,4 @@
 #include <twitc/timeline.h>
 #include <twitc/twitter.h>
 
-
 #endif /* TWCORE_H_ */

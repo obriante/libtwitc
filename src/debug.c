@@ -1,4 +1,4 @@
-/*
+/* 
  * libtwitc - C Support Library for Twitter
  * Copyright (C) 2012 Orazio Briante orazio.briante@hotmail.it
  *
@@ -23,127 +23,129 @@
 #include <time.h>
 
 #ifdef __cplusplus
-extern "C"{
+extern "C"
+  {
 #endif
 
-
-void checkLogFileDimension(const string_t fileName, const long maxSize)
+void
+checkLogFileDimension(const string_t fileName, const long maxSize)
 {
-	if(fileName)
-	{
-		debug("fileName:\t%s",fileName);
+  if (fileName)
+    {
+      debug ("fileName:\t%s", fileName);
 
-		long size=checkFileSize(fileName);
-		debug("size:\t%s",fileName);
+      long size = checkFileSize(fileName);
+      debug ("size:\t%s", fileName);
 
-		if(size>=maxSize)
-			removeFile(fileName);
+      if (size >= maxSize)
+        removeFile(fileName);
 
-	}
+    }
+}
+void
+initLog(const string_t fileName, const long maxbyteSize)
+{
+
+  if (fileName)
+    {
+
+      checkLogFileDimension(fileName, maxbyteSize);
+
+      debug ("fileName:\t%s", fileName);
+
+      logFile = fopen(fileName, "a");
+
+      if (logFile)
+        debug ("Opened \"%s\" in Append Mode", fileName);
+
+    }
 }
 
-void initLog(const string_t fileName, const long maxbyteSize)
+void
+uninitLog()
 {
-
-	if(fileName)
-	{
-
-		checkLogFileDimension(fileName, maxbyteSize);
-
-		debug("fileName:\t%s",fileName);
-
-		logFile = fopen(fileName, "a");
-
-		if(logFile)
-			debug("Opened \"%s\" in Append Mode", fileName);
-
-	}
-}
-
-
-
-void uninitLog()
-{
-	if(logFile)
-	{
-		debug("Closing logFile");
-		fclose(logFile);
-		logFile=NULL;
-	}
+  if (logFile)
+    {
+      debug ("Closing logFile");
+      fclose(logFile);
+      logFile = NULL;
+    }
 
 }
 
-static void _logWrite(FILE *output, const char *type, const char *function, const char *template, va_list argp)
+static void
+_logWrite(FILE * output, const char *type, const char *function,
+    const char *template, va_list argp)
 {
-	time_t now;
-	tm_t tmNow;
-	char timeString[26];
+  time_t now;
+  tm_t tmNow;
+  char timeString[26];
 
-	now = time(NULL);
-	localtime_r(&now, &tmNow);
-	strftime(timeString, sizeof(timeString), "%Y-%m-%d %H:%M:%S", &tmNow);
+  now = time(NULL );
+  localtime_r(&now, &tmNow);
+  strftime(timeString, sizeof(timeString), "%Y-%m-%d %H:%M:%S", &tmNow);
 
-	fprintf(output, "%s [%s] (%s)\t",  type, timeString, function);
-	vfprintf(output, template, argp);
-	fprintf(output, "\n");
-	fflush(output);
+  fprintf(output, "%s [%s] (%s)\t", type, timeString, function);
+  vfprintf(output, template, argp);
+  fprintf(output, "\n");
+  fflush(output);
 }
 
-
-void _error(const char *function, const char *template, ...)
+void
+_error(const char *function, const char *template, ...)
 {
-	va_list argp;
-	va_start(argp, template);
+  va_list argp;
+  va_start(argp, template);
 
-	_logWrite(stderr,"ERROR  ", function, template, argp);
+  _logWrite(stderr, "ERROR  ", function, template, argp);
 
-	if(logFile)
-		_logWrite(logFile,"ERROR  ", function, template, argp);
+  if (logFile)
+    _logWrite(logFile, "ERROR  ", function, template, argp);
 
-
-	va_end(argp);
+  va_end(argp);
 }
 
-
-void _warning(const char *function, const char *template, ...)
+void
+_warning(const char *function, const char *template, ...)
 {
-	va_list argp;
+  va_list argp;
 
-	va_start(argp, template);
+  va_start(argp, template);
 
-	_logWrite(stderr,"WARNING", function, template, argp);
+  _logWrite(stderr, "WARNING", function, template, argp);
 
-	if(logFile)
-		_logWrite(logFile,"WARNING", function, template, argp);
+  if (logFile)
+    _logWrite(logFile, "WARNING", function, template, argp);
 
-
-	va_end(argp);
+  va_end(argp);
 }
 
-void _info(const char *function, const char *template, ...)
+void
+_info(const char *function, const char *template, ...)
 {
-	va_list argp;
-	va_start(argp, template);
+  va_list argp;
+  va_start(argp, template);
 
-	_logWrite(stderr,"INFO   ", function, template, argp);
+  _logWrite(stderr, "INFO   ", function, template, argp);
 
-	if(logFile)
-		_logWrite(logFile,"INFO   ", function, template, argp);
+  if (logFile)
+    _logWrite(logFile, "INFO   ", function, template, argp);
 
-	va_end(argp);
+  va_end(argp);
 }
 
-void _debug(const char *function, const char *template, ...)
+void
+_debug(const char *function, const char *template, ...)
 {
-	va_list argp;
-	va_start(argp, template);
+  va_list argp;
+  va_start(argp, template);
 
-	_logWrite(stderr, "DEBUG  ", function, template, argp);
+  _logWrite(stderr, "DEBUG  ", function, template, argp);
 
-	if(logFile)
-		_logWrite(logFile, "DEBUG  ", function, template, argp);
+  if (logFile)
+    _logWrite(logFile, "DEBUG  ", function, template, argp);
 
-	va_end(argp);
+  va_end(argp);
 }
 
 #ifdef __cplusplus

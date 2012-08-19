@@ -26,26 +26,17 @@
 #include <twitc/twitter.h>
 #include <twitc/user.h>
 
+extern string_t
+tokenRequest(const twitterURLS_t *, const string_t c_key, const string_t);
 
-extern	string_t
-tokenRequest		(const twitterURLS_t *,
-		const string_t c_key,
-		const string_t);
+extern string_t
+tokenTemp(const twitterURLS_t *, const string_t, const string_t);
 
-extern	string_t
-tokenTemp			(const twitterURLS_t *,
-		const string_t,
-		const string_t);
+extern string_t
+tokenTempBrowser(const twitterURLS_t *, const string_t, const string_t);
 
-extern	string_t
-tokenTempBrowser	(const twitterURLS_t *,
-		const string_t,
-		const string_t);
-
-extern	user_t
-*tokenAccess		(const twitterURLS_t *,
-		const string_t,
-		const string_t );
-
+extern user_t
+*
+tokenAccess(const twitterURLS_t *, const string_t, const string_t);
 
 #endif /* OAUTH_H_ */
