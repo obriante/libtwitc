@@ -453,49 +453,50 @@ extern "C"
     timeline_t timeline;
     memset(&timeline, 0x00, sizeof(timeline));
 
-    xmlDocPtr doc = xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL,
-        XML_PARSE_COMPACT);
+    if(rawTimeline){
+        xmlDocPtr doc = xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL,
+            XML_PARSE_COMPACT);
 
-    if (doc)
-      {
-        xmlNodePtr cur = xmlDocGetRootElement(doc);
-
-        while (cur)
+        if (doc)
           {
+            xmlNodePtr cur = xmlDocGetRootElement(doc);
 
-            if (!xmlStrcmp(cur->name, (const xmlChar *) "statuses"))
+            while (cur)
               {
 
-                debug ("cur->name: %s", cur->name);
-
-                cur = cur->xmlChildrenNode;
-
-                int i = 0;
-                while (cur)
+                if (!xmlStrcmp(cur->name, (const xmlChar *) "statuses"))
                   {
-                    if ((!xmlStrcmp(cur->name, (const xmlChar *) "status")))
+
+                    debug ("cur->name: %s", cur->name);
+
+                    cur = cur->xmlChildrenNode;
+
+                    int i = 0;
+                    while (cur)
                       {
-                        debug ("cur->name: %s", cur->name);
+                        if ((!xmlStrcmp(cur->name, (const xmlChar *) "status")))
+                          {
+                            debug ("cur->name: %s", cur->name);
 
-                        timeline.statuses[i] = _getXmlStatus(doc, cur);
+                            timeline.statuses[i] = _getXmlStatus(doc, cur);
 
-                        debug (" %i) [%s] @%s: %s", i,
-                            timeline.statuses[i].created_at,
-                            timeline.statuses[i].user.screen_name,
-                            timeline.statuses[i].text);
-                        i++;
+                            debug (" %i) [%s] @%s: %s", i,
+                                timeline.statuses[i].created_at,
+                                timeline.statuses[i].user.screen_name,
+                                timeline.statuses[i].text);
+                            i++;
+                          }
+
+                        cur = cur->next;
+
                       }
-
-                    cur = cur->next;
-
                   }
               }
           }
-      }
 
-    if (doc)
-      xmlFreeDoc(doc);
-
+        if (doc)
+          xmlFreeDoc(doc);
+    }
     return timeline;
   }
 
