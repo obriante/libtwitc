@@ -157,6 +157,7 @@ tokenTemp(const twitterURLS_t * twURLS, const string_t twitterKey,
 
       if (tempKey)
         free(tempKey);
+
       tempKey = NULL;
 
     }

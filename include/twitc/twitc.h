@@ -17,6 +17,42 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** \mainpage libtwitc API documentation
+ *
+ *
+ * <H2>README</H2>
+ *
+ * @verbinclude README
+ *
+ */
+
+/**
+ * @page ortpextension_readme README
+ * @verbinclude README
+ */
+
+/**
+ * @page ortpextension_install INSTALL
+ * @verbinclude INSTALL
+ */
+
+/**
+ * @page ortpextension_license COPYING
+ * @verbinclude COPYING
+ */
+
+/**
+ * @page ortpextension_changelog ChangeLog
+ * @verbinclude ChangeLog
+ */
+
+/**
+ * \file twitc.h
+ * \brief The Main Header to Import
+ *
+ * This Header File Contain All library Imports
+ **/
+
 #ifndef TWCORE_H_
 #define TWCORE_H_
 
