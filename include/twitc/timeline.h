@@ -106,11 +106,20 @@ typedef struct
 
 extern status_t
 getStatus(const string_t);
+
 extern string_t
 getRawTimeline(const twitterURLS_t *, timelineType_t, const user_t *);
+
 extern timeline_t
 readTimeLine(const string_t);
+
 extern string_t
 updateStatus(const twitterURLS_t *, const user_t *, const string_t);
+
+extern void
+uninitTwitterUser(twitterUser_t);
+
+extern void
+uninitStatus(status_t);
 
 #endif /* TIMELINE_H_ */

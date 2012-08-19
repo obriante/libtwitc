@@ -158,6 +158,12 @@ main(int argc, char *argv[])
           getRawTimeline(twURLS, home_timeline, user));
       onTimelineReading(&timeline);
 
+      int i = 0;
+       for (i = 0; i < MAX_NUM_TWEETS; i++)
+         {
+           uninitStatus(timeline.statuses[i]);
+      }
+
       if (user)
         uninitUser(user);
 
