@@ -32,6 +32,19 @@ extern "C"
   {
 #endif
 
+string_t
+fileNameFromUrl(string_t url)
+{
+  string_t filename = NULL;
+
+  filename = strrchr(url, '/');
+
+  if (filename)
+    asprintf(&filename, "%s", ++filename);
+
+  return filename;
+}
+
 size_t
 writetoFile(voidPtr_t ptr, size_t size, size_t nmemb, voidPtr_t stream)
 {
@@ -66,8 +79,8 @@ getFileCURL(string_t url, string_t file)
           curl_easy_setopt(curl, CURLOPT_WRITEDATA, destFile);
           curl_easy_perform(curl);
 
-          /* 
-           * always cleanup 
+          /*
+           * always cleanup
            */
           fclose(destFile);
           curl_easy_cleanup(curl);
