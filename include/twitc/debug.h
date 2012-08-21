@@ -24,29 +24,33 @@
 #include <string.h>
 
 #ifdef DEBUG
-#define debug(template, ...)	_debug(__FUNCTION__, template, ## __VA_ARGS__)
+#define debug(template, ...)    _debug(__FILE__, __FUNCTION__, __LINE__, template, ## __VA_ARGS__)
 #else
 #define debug(template, ...)
 #endif
 
-#define info(template, ...)		_info (__FUNCTION__, template, ## __VA_ARGS__)
-#define warning(template, ...)	_warning(__FUNCTION__, template, ## __VA_ARGS__)
-#define error(template, ...)	_error(__FUNCTION__, template, ## __VA_ARGS__)
+#define info(template, ...) _info(__FILE__,  __FUNCTION__, __LINE__, template, ## __VA_ARGS__)
+#define warning(template, ...) _warning( __FILE__,  __FUNCTION__, __LINE__, template, ## __VA_ARGS__)
+#define error(template, ...) _error( __FILE__,  __FUNCTION__, __LINE__, template, ## __VA_ARGS__)
 
 static FILE *logFile = NULL;
 
 extern void
 initLog(const string_t, const long);
-extern void
-uninitLog();
 
 extern void
-_warning(const char *, const char *, ...);
+_debug(const char *, const char *, int, const char *, ...);
+
 extern void
-_info(const char *, const char *, ...);
+_info(const char *, const char *, int, const char *, ...);
+
 extern void
-_error(const char *, const char *, ...);
+_warning(const char *, const char *, int, const char *, ...);
+
 extern void
-_debug(const char *, const char *, ...);
+_error(const char *, const char *, int, const char *, ...);
+
+extern void
+uninitLog();
 
 #endif /* _DEBUG_H_ */

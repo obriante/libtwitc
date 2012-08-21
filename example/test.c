@@ -25,14 +25,14 @@
 
 #include <pwd.h>
 
-#define		PROG_PATH				".test"
-#define		CONFIG_DIR				"config"
-#define		CONFIG_FILE				"Config"
-#define		PREFERENCE_FILE			"Preference"
+#define PROG_PATH ".test"
+#define CONFIG_DIR "config"
+#define CONFIG_FILE "Config"
+#define PREFERENCE_FILE "Preference"
 
-#define		TWITTER_KEY				"0xdBqXjFX4LBTLyoc5Dg"	// USE YOUR APPLICATION KEY
-#define TWITTER_KEY_SECRET			"VIr57NPcgxxpJ2esI7brKGhth06EslbH0UDD3ImFB8"	// USE YOUR APPLICATION KEY
-#define		TWC_UPDATES_URL			"https://raw.github.com/KernelMonkey/libtwitc/master/VERSION"
+#define TWITTER_KEY "0xdBqXjFX4LBTLyoc5Dg"	// USE YOUR APPLICATION KEY
+#define TWITTER_KEY_SECRET "VIr57NPcgxxpJ2esI7brKGhth06EslbH0UDD3ImFB8"	// USE YOUR APPLICATION KEY
+#define TWC_UPDATES_URL "https://raw.github.com/KernelMonkey/libtwitc/master/VERSION"
 
 string_t programDir;
 string_t configDir;
