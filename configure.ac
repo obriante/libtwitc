@@ -12,6 +12,7 @@ if test x"$CXXFLAGS" = x""; then
   AC_SUBST(CXXFLAGS, [ ])
 fi
 
+AC_PROG_CC
 AC_PROG_CXX
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([no])])
 
