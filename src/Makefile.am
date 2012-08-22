@@ -1,8 +1,5 @@
 lib_LIBRARIES = libtwitc.a
 
-AM_CFLAGS = \
-@EXTERN_DEP_LIBS@
-
 libtwitc_a_SOURCES = \
 debug.c \
 functions.c \
@@ -16,7 +13,13 @@ libtwitc_a_LIBADD =
 
 if DEBUG
 
-AM_CPPFLAGS = \
+AM_CFLAGS = -g3 -O0 \
+	-DDEBUG \
+	-DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
+	@EXTERN_DEP_CFLAGS@\
+	@libtwitc_CFLAGS@
+
+AM_CXXFLAGS = -g3 -O0 \
 	-DDEBUG \
 	-DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
 	@EXTERN_DEP_CFLAGS@\
@@ -24,7 +27,12 @@ AM_CPPFLAGS = \
 
 else
 
-AM_CPPFLAGS = \
+AM_CFLAGS = -O2 \
+	-DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
+	@EXTERN_DEP_CFLAGS@\
+	@libtwitc_CFLAGS@
+
+AM_CXXFLAGS = -O2 \
 	-DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
 	@EXTERN_DEP_CFLAGS@\
 	@libtwitc_CFLAGS@
