@@ -186,7 +186,7 @@ main(int argc, char *argv[])
       for (i = 0; i < MAX_NUM_TWEETS; i++)
         {
           if(timeline.statuses[i].text)
-          uninitStatus(timeline.statuses[i]);
+            uninitStatus(timeline.statuses[i]);
         }
 
 
@@ -200,7 +200,19 @@ main(int argc, char *argv[])
       for (i = 0; i < MAX_NUM_DM; i++)
         {
           if(DMs.directMessage[i].text)
-          uninitDM(DMs.directMessage[i]);
+            uninitDM(DMs.directMessage[i]);
+        }
+
+      string_t rawSentDM=getRawSentDM(twURLS, user);
+      direct_messages_t sentDMs=readDMs(rawSentDM);
+
+      onDMsReading(&sentDMs);
+
+      i = 0;
+      for (i = 0; i < MAX_NUM_DM; i++)
+        {
+          if(sentDMs.directMessage[i].text)
+            uninitDM(sentDMs.directMessage[i]);
         }
 
       if (user)

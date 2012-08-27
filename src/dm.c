@@ -38,15 +38,15 @@ extern "C"
 {
 #endif
 
+
   string_t
-  getRawDM(const twitterURLS_t * twURLS, const user_t * user)
+  _getRawDM(string_t url, const twitterURLS_t * twURLS, const user_t * user)
   {
+
     string_t output=NULL;
 
-    if (user && twURLS){
-        string_t url = componeAPI_URL(twURLS, Https, DIRECTMESSAGES_URL, Xml);
-
-
+    if (user && twURLS)
+      {
         string_t req_url = NULL;
         asprintf(&req_url, "%s%s", url, URL_SEP_QUES);
         req_url = oauth_sign_url2(req_url, NULL, OA_HMAC, NULL, user->consumerKey, user->consumerSecretKey, user->token, user->secretToken);
@@ -67,12 +67,30 @@ extern "C"
           free(req_url);
         req_url = NULL;
 
-    }
+      }
 
     if(!output)
       warning("Returned value: (NULL)");
 
     return output;
+  }
+
+  string_t
+  getRawDM(const twitterURLS_t * twURLS, const user_t * user)
+  {
+
+    string_t url = componeAPI_URL(twURLS, Https, DIRECTMESSAGES_URL, Xml);
+
+
+    return _getRawDM(url, twURLS, user);
+  }
+
+
+  string_t
+  getRawSentDM(const twitterURLS_t * twURLS, const user_t * user)
+  {
+    string_t url = componeAPI_URL(twURLS, Https, DIRECTMESSAGESSENT_URL, Xml);
+    return _getRawDM(url, twURLS, user);
   }
 
 

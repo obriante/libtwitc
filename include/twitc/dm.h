@@ -90,6 +90,9 @@ typedef struct{
 extern string_t
 getRawDM(const twitterURLS_t *, const user_t *);
 
+extern string_t
+ getRawSentDM(const twitterURLS_t *, const user_t *);
+
 extern direct_messages_t
 readDMs(const string_t);
 
