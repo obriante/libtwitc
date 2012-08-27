@@ -60,10 +60,12 @@
 #include <twitc/debug.h>
 #include <twitc/functions.h>
 #include <twitc/http.h>
+#include <twitc/twitter.h>
 #include <twitc/oauth.h>
 #include <twitc/status.h>
 #include <twitc/timeline.h>
 #include <twitc/dm.h>
-#include <twitc/twitter.h>
+#include <twitc/favorites.h>
+
 
 #endif /* TWCORE_H_ */

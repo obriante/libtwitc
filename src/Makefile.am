@@ -9,7 +9,8 @@ oauth.c \
 status.c \
 timeline.c \
 twitter.c \
-dm.c
+dm.c \
+favorites.c
 
 libtwitc_a_LIBADD =
 

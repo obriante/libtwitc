@@ -191,7 +191,6 @@ main(int argc, char *argv[])
 
 
       string_t rawDM=getRawDM(twURLS, user);
-
       direct_messages_t DMs=readDMs(rawDM);
 
       onDMsReading(&DMs);
@@ -218,6 +217,18 @@ main(int argc, char *argv[])
      string_t dm=sendDM(twURLS, user, user->screenName,"E' solo un test!");
 
      info("DM: %s", dm);
+
+     timeline_t favorites = readTimeLine(
+         getRawFavorites(twURLS, user));
+
+           onTimelineReading(&favorites);
+
+           i = 0;
+           for (i = 0; i < MAX_NUM_TWEETS; i++)
+             {
+               if(favorites.statuses[i].text)
+                 uninitStatus(favorites.statuses[i]);
+             }
 
 
       if (user)

@@ -20,6 +20,8 @@
 #ifndef HTTP_H_
 #define HTTP_H_
 
+#include <twitc/twitter.h>
+
 /* URL separators */
 #define URL_SEP_AMP					"&"
 #define URL_SEP_QUES					"?"
@@ -28,7 +30,6 @@
 #define PROTOCOL_HTTP					"http://"
 #define PROTOCOL_HTTPS					"https://"
 
-#include <twitc/twitter.h>
 
 extern string_t
 fileNameFromUrl(string_t);
