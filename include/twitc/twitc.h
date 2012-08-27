@@ -61,7 +61,9 @@
 #include <twitc/functions.h>
 #include <twitc/http.h>
 #include <twitc/oauth.h>
+#include <twitc/status.h>
 #include <twitc/timeline.h>
+#include <twitc/dm.h>
 #include <twitc/twitter.h>
 
 #endif /* TWCORE_H_ */

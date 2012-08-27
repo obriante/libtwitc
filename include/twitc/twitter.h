@@ -52,8 +52,6 @@
 #define AUTHORIZE_URL				"authorize"
 #define ACCESS_TOKEN_URL			"access_token"
 
-/* Search URLs */
-
 /* Status URLs */
 #define STATUSUPDATE_URL			"statuses/update"
 #define STATUSSHOW_URL				"statuses/show/"
