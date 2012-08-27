@@ -1,1 +1,6 @@
-[2012-08-27] Direct Message support
+[2012-08-27]
+ * Direct Message support
+ 	- Request DMs list
+ 	- read XML DMs list
+    - read single  XML DM list
+ 	- send Direct message

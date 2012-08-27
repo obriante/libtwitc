@@ -59,10 +59,6 @@ extern "C"
 
           }
 
-        if (url)
-          free(url);
-        url = NULL;
-
         if (req_url)
           free(req_url);
         req_url = NULL;
@@ -78,24 +74,109 @@ extern "C"
   string_t
   getRawDM(const twitterURLS_t * twURLS, const user_t * user)
   {
-
-    string_t url = componeAPI_URL(twURLS, Https, DIRECTMESSAGES_URL, Xml);
-
-
-    return _getRawDM(url, twURLS, user);
+    return _getRawDM(componeAPI_URL(twURLS, Https, DIRECTMESSAGES_URL, Xml), twURLS, user);
   }
 
 
   string_t
   getRawSentDM(const twitterURLS_t * twURLS, const user_t * user)
   {
-    string_t url = componeAPI_URL(twURLS, Https, DIRECTMESSAGESSENT_URL, Xml);
-    return _getRawDM(url, twURLS, user);
+    return _getRawDM(componeAPI_URL(twURLS, Https, DIRECTMESSAGESSENT_URL, Xml), twURLS, user);
+
   }
 
+  string_t
+  sendDM(const twitterURLS_t * twURLS, const user_t * user, const string_t to_rx, const string_t msg)
+  {
 
-  dm_user_t _getXmlDMUser(const xmlDocPtr doc, xmlNodePtr cur){
+    string_t output = NULL;
 
+    if (twURLS && user && msg && to_rx)
+      {
+        debug ("Message: %s", msg);
+        debug ("screenName: %s", user->screenName);
+        debug ("to_rx: %s", to_rx);
+
+        string_t url = NULL;
+
+        /*
+         * Send Tweet with oAuth functions
+         */
+        url = componeAPI_URL(twURLS, Https, DIRECTMESSAGENEW_URL, Xml);
+
+        string_t dmMsg = oauth_url_escape(msg);
+        if (dmMsg)
+          {
+            debug ("url:\t%s", url);
+
+            string_t twitterDMURL = NULL;
+            asprintf(&twitterDMURL, "%s%s%s%s%s%s%s%s", url, URL_SEP_QUES, "screen_name",
+                "=", to_rx, URL_SEP_AMP, "text=", dmMsg);
+
+            if (twitterDMURL)
+              {
+                debug ("url:\t%s", twitterDMURL);
+
+                if (user->id && user->screenName && user->consumerKey
+                    && user->consumerSecretKey && user->token
+                    && user->secretToken)
+                  {
+
+                    /*DEBUG*/
+                    debug ("user->screenName: %s", user->screenName);
+                    debug ("user->id: %s", user->id);
+                    debug ("user->consumerKey: %s", user->consumerKey);
+                    debug ("user->consumerSecretKey: %s", user->consumerSecretKey);
+                    debug ("user->token: %s", user->token);
+                    debug ("user->secretToken: %s", user->secretToken);
+
+                    string_t postarg = NULL;
+                    string_t sendmsg = oauth_sign_url2(twitterDMURL,
+                        &postarg, OA_HMAC, NULL, user->consumerKey,
+                        user->consumerSecretKey, user->token, user->secretToken);
+
+                    if (postarg)
+                      debug ("postarg: %s", postarg);
+
+
+                    if (sendmsg)
+                      output = oauth_http_post(sendmsg, postarg);
+
+                    if (sendmsg)
+                      free(sendmsg);
+                    if (postarg)
+                      free(postarg);
+
+                    sendmsg = NULL;
+                    postarg = NULL;
+
+                  }
+
+              }
+
+          }
+
+        if (dmMsg)
+          free(dmMsg);
+        if (url)
+          free(url);
+
+        dmMsg = NULL;
+        url = NULL;
+
+
+      }
+
+    if (!output)
+      warning("Returned value: (NULL)");
+    else
+      debug ("output: %s", output);
+
+    return output;
+  }
+
+  dm_user_t _getXmlDMUser(const xmlDocPtr doc, xmlNodePtr cur)
+  {
 
     dm_user_t dm_user;
     memset(&dm_user, 0x00, sizeof(dm_user_t));

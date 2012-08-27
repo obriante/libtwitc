@@ -215,6 +215,11 @@ main(int argc, char *argv[])
             uninitDM(sentDMs.directMessage[i]);
         }
 
+     string_t dm=sendDM(twURLS, user, "KernelMonkey","E' solo un test!");
+
+     info("DM: %s", dm);
+
+
       if (user)
         uninitUser(user);
 
