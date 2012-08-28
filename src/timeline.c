@@ -167,7 +167,19 @@ extern "C"
     return timeline;
   }
 
+  void uninitTimeline(timeline_t *timeline)
+  {
+    int i = 0;
 
+    for (i = 0; i < MAX_NUM_TWEETS; i++)
+      {
+        if(timeline->statuses[i].text)
+          uninitStatus(timeline->statuses[i]);
+      }
+
+    memset(timeline, 0x00, sizeof(timeline_t));
+
+  }
 
 #ifdef __cplusplus
 }

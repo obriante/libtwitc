@@ -527,6 +527,19 @@ extern "C"
     uninitDMUser(direct_message.recipient);
   }
 
+
+  void uninitDirectMessages(direct_messages_t *DMs)
+  {
+   int  i = 0;
+          for (i = 0; i < MAX_NUM_DM; i++)
+            {
+              if(DMs->directMessage[i].text)
+                uninitDM(DMs->directMessage[i]);
+            }
+
+          memset(DMs, 0x00, sizeof(direct_messages_t));
+  }
+
 #ifdef __cplusplus
 }
 #endif

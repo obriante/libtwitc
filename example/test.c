@@ -182,53 +182,33 @@ main(int argc, char *argv[])
           getRawTimeline(twURLS, home_timeline, user));
       onTimelineReading(&timeline);
 
-      int i = 0;
-      for (i = 0; i < MAX_NUM_TWEETS; i++)
-        {
-          if(timeline.statuses[i].text)
-            uninitStatus(timeline.statuses[i]);
-        }
-
+      uninitTimeline(&timeline);
 
       string_t rawDM=getRawDM(twURLS, user);
       direct_messages_t DMs=readDMs(rawDM);
 
       onDMsReading(&DMs);
 
-      i = 0;
-      for (i = 0; i < MAX_NUM_DM; i++)
-        {
-          if(DMs.directMessage[i].text)
-            uninitDM(DMs.directMessage[i]);
-        }
+      uninitDirectMessages(&DMs);
+
 
       string_t rawSentDM=getRawSentDM(twURLS, user);
       direct_messages_t sentDMs=readDMs(rawSentDM);
 
       onDMsReading(&sentDMs);
 
-      i = 0;
-      for (i = 0; i < MAX_NUM_DM; i++)
-        {
-          if(sentDMs.directMessage[i].text)
-            uninitDM(sentDMs.directMessage[i]);
-        }
+      uninitDirectMessages(&sentDMs);
 
-     string_t dm=sendDM(twURLS, user, user->screenName,"E' solo un test!");
+      string_t dm=sendDM(twURLS, user, user->screenName,"E' solo un test!");
 
-     info("DM: %s", dm);
+      info("DM: %s", dm);
 
-     timeline_t favorites = readTimeLine(
-         getRawFavorites(twURLS, user));
+      timeline_t favorites = readTimeLine(
+          getRawFavorites(twURLS, user));
 
-           onTimelineReading(&favorites);
+      onTimelineReading(&favorites);
 
-           i = 0;
-           for (i = 0; i < MAX_NUM_TWEETS; i++)
-             {
-               if(favorites.statuses[i].text)
-                 uninitStatus(favorites.statuses[i]);
-             }
+      uninitTimeline(&favorites);
 
 
       if (user)

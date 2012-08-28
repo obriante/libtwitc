@@ -107,6 +107,8 @@ uninitDMUser(dm_user_t dm_user);
 extern void
 uninitDM(direct_message_t direct_message);
 
+extern void uninitDirectMessages(direct_messages_t *);
+
 
 
 #endif /* DM_H_ */
