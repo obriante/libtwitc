@@ -72,7 +72,7 @@ tokenRequest(const twitterURLS_t * twURLS, const string_t c_key,
   if (twURLS && c_key && c_secret)
     {
 
-      string_t req_url = componeOAUTH_URL(twURLS, Https, REQTOKEN_URL, None);
+      string_t req_url = componeOAUTH_URL(twURLS, Http, REQTOKEN_URL, None);
 
       string_t postarg = NULL;
       req_url = oauth_sign_url2(req_url, NULL, OA_HMAC, NULL, c_key, c_secret,
@@ -212,7 +212,7 @@ tokenTempBrowser(const twitterURLS_t * twURLS, const string_t twitterKey,
               /* 
                * Generate a Twitter-URL for get user-PIN 
                */
-              string_t req_url = componeOAUTH_URL(twURLS, Https, AUTHORIZE_URL,
+              string_t req_url = componeOAUTH_URL(twURLS, Http, AUTHORIZE_URL,
                   None);
 
               string_t url = NULL;
@@ -283,7 +283,7 @@ tokenAccess(const twitterURLS_t * twURLS, const string_t pin,
            * necessary: TwitCrusader consumer key (and secret) with a 2
            * Temp-Keys All keys are saved in /tmp/token file 
            */
-          string_t accessURL = componeOAUTH_URL(twURLS, Https, ACCESS_TOKEN_URL,
+          string_t accessURL = componeOAUTH_URL(twURLS, Http, ACCESS_TOKEN_URL,
               None);
           asprintf(&accessURL, "%s%s%s%s%s", accessURL, URL_SEP_QUES,
               "oauth_verifier", "=", pin);
