@@ -1,7 +1,6 @@
-lib_LIBRARIES = libtwitc.a
+noinst_LIBRARIES = libtwitc.a
 
 libtwitc_a_SOURCES = \
-debug.c \
 functions.c \
 user.c \
 http.c \
@@ -13,7 +12,8 @@ dm.c \
 favorites.c
 
 
-libtwitc_a_LIBADD =
+libtwitc_a_LIBADD = \
+@liblogc_LIBS@
 
 if DEBUG
 
@@ -21,14 +21,16 @@ AM_CFLAGS = -g3 -O0 \
 	-DDEBUG \
 -DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
 	@EXTERN_DEP_CFLAGS@\
-	@libtwitc_CFLAGS@
+	@libtwitc_CFLAGS@ \
+	@liblogc_CFLAGS@
 
 else
 
 AM_CFLAGS = -O2 \
 	-DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
 	@EXTERN_DEP_CFLAGS@\
-	@libtwitc_CFLAGS@
+	@libtwitc_CFLAGS@ \
+	@liblogc_CFLAGS@
 
 endif
 

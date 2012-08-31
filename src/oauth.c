@@ -19,8 +19,9 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <logc/logc.h>
+
 #include <twitc/stdredef.h>
-#include <twitc/debug.h>
 #include <twitc/http.h>
 #include <twitc/oauth.h>
 

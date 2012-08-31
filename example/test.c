@@ -17,6 +17,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <logc/logc.h>
+
 #include <twitc/twitc.h>
 
 #include <stdio.h>

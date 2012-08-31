@@ -1,0 +1,3 @@
+[submodule "liblogc"]
+	path = liblogc
+	url = https://github.com/KernelMonkey/liblogc.git

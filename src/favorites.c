@@ -20,7 +20,8 @@
  */
 
 
-#include <twitc/debug.h>
+#include <logc/logc.h>
+
 #include <twitc/favorites.h>
 #include <twitc/http.h>
 

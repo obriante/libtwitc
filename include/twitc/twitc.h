@@ -57,7 +57,6 @@
 #define TWCORE_H_
 
 #include <twitc/stdredef.h>
-#include <twitc/debug.h>
 #include <twitc/functions.h>
 #include <twitc/http.h>
 #include <twitc/twitter.h>

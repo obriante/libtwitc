@@ -20,7 +20,8 @@
  */
 
 
-#include <twitc/debug.h>
+#include <logc/logc.h>
+
 #include <twitc/http.h>
 #include <twitc/status.h>
 #include <twitc/user.h>

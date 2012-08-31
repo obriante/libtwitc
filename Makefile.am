@@ -1,7 +1,7 @@
 # DOXYGEN SUPPORT
 include $(top_srcdir)/aminclude.am
 
-SUBDIRS = src example
+SUBDIRS = liblogc src example
 
 EXTRA_DIST = \
 	autogen.sh \
