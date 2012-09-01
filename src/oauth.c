@@ -59,7 +59,7 @@ getParameters(string_t argv[], int argc, const string_t param)	// Improved
         }
     }
 
-  warning("Returned value: (NULL)");
+  log(WARNING,"Returned value: (NULL)");
   return NULL ;
 }
 
@@ -103,7 +103,7 @@ tokenRequest(const twitterURLS_t * twURLS, const string_t c_key,
     }
 
   if (!tempKeyParameters)
-    warning("Returned value: (NULL)");
+    log(WARNING,"Returned value: (NULL)");
 
   return tempKeyParameters;
 
@@ -164,7 +164,7 @@ tokenTemp(const twitterURLS_t * twURLS, const string_t twitterKey,
     }
 
   if (!tmpToken)
-    warning("Returned value: (NULL)");
+    log(WARNING,"Returned value: (NULL)");
 
   return tmpToken;
 }
@@ -244,7 +244,7 @@ tokenTempBrowser(const twitterURLS_t * twURLS, const string_t twitterKey,
     }
 
   if (!tmpToken)
-    warning("Returned value: (NULL)");
+    log(WARNING,"Returned value: (NULL)");
 
   return tmpToken;
 }
@@ -347,7 +347,7 @@ tokenAccess(const twitterURLS_t * twURLS, const string_t pin,
     }
 
   if (!user)
-    warning("Returned value: (NULL)");
+    log(WARNING,"Returned value: (NULL)");
 
   return user;
 }

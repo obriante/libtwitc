@@ -84,7 +84,7 @@ uninitURLS(twitterURLS_t * twURLS)
       free(twURLS);
     }
 
-  warning("twitterURLS_t uninitialized");
+  log(WARNING,"twitterURLS_t uninitialized");
   twURLS = NULL;
 
 }

@@ -58,7 +58,7 @@ initUser(string_t id, string_t screenName, string_t token, string_t secretToken,
       return user;
     }
 
-  warning("Returned value: (NULL)");
+  log(WARNING,"Returned value: (NULL)");
   return NULL ;
 }
 
@@ -97,7 +97,7 @@ uninitUser(user_t * user)
 
     }
 
-  warning("user_t uninitialized");
+  log(WARNING,"user_t uninitialized");
   user = NULL;
 }
 
@@ -219,7 +219,7 @@ readUserFile(const string_t fileName)
 
     }
 
-  warning("Returned value: (NULL)");
+  log(WARNING,"Returned value: (NULL)");
   return NULL ;
 }
 

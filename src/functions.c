@@ -70,7 +70,7 @@ readRawTextFile(const string_t fileName)
 
     }
 
-  warning("Returned value: (NULL)");
+  log(WARNING,"Returned value: (NULL)");
   return NULL ;
 }
 

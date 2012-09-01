@@ -69,7 +69,7 @@ string_t getRawFavorites(const twitterURLS_t *twURLS, const user_t *user)
    url = NULL;
 
    if (!output)
-     warning("Returned value: (NULL)");
+     log(WARNING,"Returned value: (NULL)");
    else
      debug("output: %s", output);
 

@@ -109,7 +109,7 @@ extern "C"
     url = NULL;
 
     if (!timeline)
-      warning("Returned value: (NULL)");
+      log(WARNING,"Returned value: (NULL)");
 
     return timeline;
   }
