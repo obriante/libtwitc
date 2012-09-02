@@ -18,8 +18,6 @@ libtwitc_a_LIBADD = \
 if DEBUG
 
 AM_CFLAGS = -g3 -O0 \
-	-DDEBUG \
--DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
 	@EXTERN_DEP_CFLAGS@\
 	@libtwitc_CFLAGS@ \
 	@liblogc_CFLAGS@
@@ -27,7 +25,6 @@ AM_CFLAGS = -g3 -O0 \
 else
 
 AM_CFLAGS = -O2 \
-	-DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
 	@EXTERN_DEP_CFLAGS@\
 	@libtwitc_CFLAGS@ \
 	@liblogc_CFLAGS@

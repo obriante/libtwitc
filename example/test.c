@@ -32,6 +32,8 @@
 #define CONFIG_FILE "Config"
 #define PREFERENCE_FILE "Preference"
 
+#define LOG_FILE	"/tmp/test.log"
+
 #define TWITTER_KEY "0xdBqXjFX4LBTLyoc5Dg"	// USE YOUR APPLICATION KEY
 #define TWITTER_KEY_SECRET "VIr57NPcgxxpJ2esI7brKGhth06EslbH0UDD3ImFB8"	// USE YOUR APPLICATION KEY
 #define TWC_UPDATES_URL "https://raw.github.com/KernelMonkey/libtwitc/master/VERSION"
@@ -137,9 +139,11 @@ byte_t
 main(int argc, char *argv[])
 {
 
-	initLog(LOG_FILE_VIDEO,LOG_FILE_VIDEO);
+	initLog(FILE_VIDEO_LOG, FILE_VIDEO_LOG);
+	openVideoLog(stdout);
+	checkFileSize(LOG_FILE, 0);
+	openLogFile(LOG_FILE);
 
-	initLogFile("/tmp/test.log", (1024 * 1000));
 	log(INFO,"start");
 
 	initProgramPath();
