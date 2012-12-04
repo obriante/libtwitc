@@ -1,7 +1,7 @@
 # libtwitc - C Support Library for Twitter
 ###Copyright (C) 2012  Orazio Briante orazio.briante@hotmail.it
-
-####Other developers: Patryk Rzucidlo ptkdev@gmail.com
+### Patryk Rzucidlo ptkdev@gmail.com
+#### Contributors: Alfredo Liguoro  <freddy@haxaddicts.net>
 
 ## Prerequisites:
 
