@@ -4,23 +4,24 @@ test_SOURCES= \
 test.c
 
 test_LDADD= \
-@EXTERN_DEP_LIBS@ \
-@libtwitc_LIBS@
+@libtwitc_LIBS@ \
+@liblogc_LIBS@ \
+@EXTERN_DEP_LIBS@
+
 
 if DEBUG
 
-AM_CPPFLAGS = \
-	-DDEBUG \
-	-DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
-	@EXTERN_DEP_CFLAGS@\
-	@libtwitc_CFLAGS@
+AM_CFLAGS = -g3 -O0 \
+-DDEBUG \
+@EXTERN_DEP_CFLAGS@\
+@liblogc_CFLAGS@ \
+@libtwitc_CFLAGS@
 
 else
 
-AM_CPPFLAGS = \
-	-DDEBUG \
-	-DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
-	@EXTERN_DEP_CFLAGS@\
-	@libtwitc_CFLAGS@
+AM_CFLAGS = -O2 \
+@EXTERN_DEP_CFLAGS@\
+@liblogc_CFLAGS@ \
+@libtwitc_CFLAGS@
 
 endif

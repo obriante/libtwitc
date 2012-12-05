@@ -4,7 +4,7 @@ AC_PREREQ(2.59)
 
 AC_INIT(libtwitc, 0.1)
 AC_PROG_CC
-m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([no])])
 
 dnl Initialize automake
 AM_INIT_AUTOMAKE([-Wall])
@@ -24,6 +24,12 @@ DX_PS_FEATURE(OFF)
 DX_INIT_DOXYGEN([$PACKAGE_NAME],[twitc.doxyfile],[doc])
 
 PKG_CHECK_MODULES(EXTERN_DEP, [libcurl libxml-2.0 oauth json])
+
+AC_CONFIG_SUBDIRS( liblogc )
+	liblogc_CFLAGS="-I\$(top_srcdir)/liblogc/include"
+	liblogc_LIBS="\$(top_builddir)/liblogc/src/liblogc.a"
+AC_SUBST(liblogc_CFLAGS)
+AC_SUBST(liblogc_LIBS)
 
 AC_CONFIG_SUBDIRS( libtwitc )
 	libtwitc_CFLAGS="-I\$(top_srcdir)/include"
