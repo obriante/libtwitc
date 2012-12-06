@@ -17,14 +17,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <twitc/debug.h>
-#include <twitc/stdredef.h>
-#include <twitc/functions.h>
-#include <twitc/user.h>
-#include <twitc/timeline.h>
-#include <twitc/http.h>
-#include <twitc/oauth.h>
-#include <twitc/twitter.h>
+#include <logc/logc.h>
+
+#include <twitc/twitc.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,168 +27,204 @@
 
 #include <pwd.h>
 
-#define		PROG_PATH				".test"
-#define		CONFIG_DIR				"config"
-#define		CONFIG_FILE				"Config"
-#define		PREFERENCE_FILE			"Preference"
+#define PROG_PATH ".test"
+#define CONFIG_DIR "config"
+#define CONFIG_FILE "Config"
+#define PREFERENCE_FILE "Preference"
 
-#define		TWITTER_KEY					""	// USE YOUR APPLICATION KEY
-#define		TWITTER_KEY_SECRET			"" // USE YOUR APPLICATION KEY
+#define LOG_FILE	"/tmp/test.log"
 
-#define		TWC_UPDATES_URL			"https://raw.github.com/KernelMonkey/libtwitc/master/VERSION"
+#define TWITTER_KEY "0xdBqXjFX4LBTLyoc5Dg"	// USE YOUR APPLICATION KEY
+#define TWITTER_KEY_SECRET "VIr57NPcgxxpJ2esI7brKGhth06EslbH0UDD3ImFB8"	// USE YOUR APPLICATION KEY
+#define TWC_UPDATES_URL "https://raw.github.com/KernelMonkey/libtwitc/master/VERSION"
 
 string_t programDir;
 string_t configDir;
 string_t configFile;
 
-
-void initProgramPath()
+void
+initProgramPath()
 {
 	uid_t uid = geteuid();
-	passwd_t *p= getpwuid(uid);
+	passwd_t *p = getpwuid(uid);
 
-	asprintf(&programDir, "%s/%s", p->pw_dir,PROG_PATH);
-	asprintf(&configDir, "%s/%s", programDir,CONFIG_DIR);
-	asprintf(&configFile, "%s/%s",configDir,CONFIG_FILE);
+	asprintf(&programDir, "%s/%s", p->pw_dir, PROG_PATH);
+	asprintf(&configDir, "%s/%s", programDir, CONFIG_DIR);
+	asprintf(&configFile, "%s/%s", configDir, CONFIG_FILE);
 
-
-	debug("programDir:\t%s",programDir);
-	debug("configDir:\t%s",configDir);
-	debug("configFile:\t%s",configFile);
+	debug ("programDir:\t%s", programDir);debug ("configDir:\t%s", configDir);debug ("configFile:\t%s", configFile);
 
 }
 
-
-user_t *autentication(twitterURLS_t *twURLS, string_t fileName)
+user_t *
+autentication(twitterURLS_t * twURLS, string_t fileName)
 {
-	string_t tmpToken=tokenTempBrowser(twURLS, TWITTER_KEY, TWITTER_KEY_SECRET);
+	string_t tmpToken = tokenTempBrowser(twURLS, TWITTER_KEY, TWITTER_KEY_SECRET);
 
-	if(tmpToken)
+	if (tmpToken)
 	{
-		debug("tmpToken:\t%s",tmpToken);
+		debug ("tmpToken:\t%s", tmpToken);
 
 		int c;
 		char pin[10];
 		fprintf(stdout, "inserisci il pin: ");
 		fgets(pin, 10, stdin);
 		fprintf(stdout, "\n\n");
-		debug("pin:\t%s", pin);
+		debug ("pin:\t%s", pin);
 
-		pin[strlen(pin)-1]='\0';
+		pin[strlen(pin) - 1] = '\0';
 
-
-		user_t *user=tokenAccess(twURLS, pin, tmpToken);
-
+		user_t *user = tokenAccess(twURLS, pin, tmpToken);
 
 		//USER CHECK
 
-		if(user)
+		if (user)
 		{
-			writeUserFile(user,configFile);
+			writeUserFile(user, configFile);
 
 			return user;
 		}
 	}
-	warning("Returned value: (NULL)");
-	return NULL;
+	log(WARNING,"Returned value: (NULL)");
+	return NULL ;
 }
 
-
-void onStatusReading(status_t *status)
+void
+onStatusReading(status_t * status)
 {
-	if(status->created_at && status->user.screen_name && status->text)
-		fprintf(stdout,"\t[%s] @%s: %s\n", status->created_at, status->user.screen_name, status->text);
+	if (status->created_at && status->user.screen_name && status->text)
+		fprintf(stdout, "\t[%s] @%s: %s\n", status->created_at,
+				status->user.screen_name, status->text);
 }
 
-void onTimelineReading(timeline_t *timeline)
+void
+onTimelineReading(timeline_t * timeline)
 {
 
-	int i=0;
-	for(i=0; i<MAX_NUM_TWEETS; i++)
+	int i = 0;
+	for (i = 0; i < MAX_NUM_TWEETS; i++)
 	{
-		printf("%i)", i+1);
-		onStatusReading(&timeline->statuses[i]);
-
-
+		if(timeline->statuses[i].text)
+		{
+			printf("%i)", i + 1);
+			onStatusReading(&timeline->statuses[i]);
+		}
 	}
 
 }
 
-byte_t main(int argc, char *argv[])
+void
+onDMReading(direct_message_t * direct_message)
+{
+	if (direct_message->created_at && direct_message->sender.screen_name && direct_message->recipient.screen_name && direct_message->text)
+		fprintf(stdout, "\tDate: %s\nFrom: @%s\nTo: @%s\nMessage: %s\n\n", direct_message->created_at,
+				direct_message->sender.screen_name, direct_message->recipient.screen_name, direct_message->text);
+}
+
+void onDMsReading(direct_messages_t *DMs)
+{
+	int i = 0;
+	for (i = 0; i < MAX_NUM_DM; i++)
+	{
+		if(DMs->directMessage[i].text)
+		{
+			printf("%i)", i + 1);
+			onDMReading(&DMs->directMessage[i]);
+		}
+	}
+}
+
+
+byte_t
+main(int argc, char *argv[])
 {
 
-	initLog("/tmp/test.log", (1024*1000));
-	info("start");
+	initLog(FILE_VIDEO_LOG, FILE_VIDEO_LOG);
+	openVideoLog(stdout);
+	checkFileSize(LOG_FILE, 0);
+	openLogFile(LOG_FILE);
+
+	log(INFO,"start");
 
 	initProgramPath();
 
 	//VERSION CHECK
 
+	string_t version = getPageCURL(TWC_UPDATES_URL);
 
-	string_t  version=getPageCURL(TWC_UPDATES_URL);
-
-	if(version)
+	if (version)
 	{
 		printf("Version:\t\t%s", version);
 
 		free(version);
-		version=NULL;
+		version = NULL;
 	}
 
-
-	if(createDirectory(programDir))
+	if (createDirectory(programDir))
 		createDirectory(configDir);
 
-	user_t *user=readUserFile(configFile);
-
+	user_t *user = readUserFile(configFile);
 
 	//OAUTH TEST
-	twitterURLS_t *twURLS=initURLS(OAUTH_URL_DEFAULT, API_URL_DEFAULT, SEARCH_URL_DEFAULT, Xml);
+	twitterURLS_t *twURLS = initURLS(OAUTH_URL_DEFAULT, API_URL_DEFAULT, SEARCH_URL_DEFAULT, Json);
 
+	if (!user)
+		user = autentication(twURLS, configFile);
 
-	if(!user)
-		user=autentication(twURLS, configFile);
-
-
-	if(user)
+	if (user)
 	{
-		string_t rawStatus=NULL;
+		string_t rawStatus = NULL;
 
-		rawStatus=updateStatus(twURLS, user, "Test d'invio tramite libtwitc usando Xml", Xml);
-		if(rawStatus)
+		rawStatus = updateStatus(twURLS, user, "Json - Test d'invio tramite libtwitc!", Json);
+		if (rawStatus)
 		{
-			info("XML Message correctly tweetted!");
-			status_t status=getXmlStatus(rawStatus);
+			log(INFO,"Message correctly tweetted!");
+			status_t status = getStatus(rawStatus);
 			onStatusReading(&status);
 		}
 		else
-			info("XML Message not tweetted!");
+			log(INFO,"Message not tweetted!");
 
-		rawStatus=updateStatus(twURLS, user, "Test d'invio tramite libtwitc usando Json", Json);
-		if(rawStatus)
-		{
-			info("Json Message correctly tweetted!");
-		}
-		else
-			info("Json Message not tweetted!");
+		timeline_t timeline = readTimeLine( getRawTimeline(twURLS, home_timeline, user, Json));
+		onTimelineReading(&timeline);
 
+		uninitTimeline(&timeline);
 
-		timeline_t TimelineXml=readXmlTimeLine(getRawTimeline(twURLS, home_timeline, Xml, user ));
-		onTimelineReading(&TimelineXml);
+		string_t rawDM=getRawDM(twURLS, user, Json);
+		direct_messages_t DMs=readDMs(rawDM);
 
-		timeline_t TimelineJson=readJsonTimeLine(getRawTimeline(twURLS, home_timeline, Json, user));
-		onTimelineReading(&TimelineJson);
+		onDMsReading(&DMs);
+
+		uninitDirectMessages(&DMs);
 
 
-		if(user)
+		string_t rawSentDM=getRawSentDM(twURLS, user, Json);
+		direct_messages_t sentDMs=readDMs(rawSentDM);
+
+		onDMsReading(&sentDMs);
+
+		uninitDirectMessages(&sentDMs);
+
+		string_t dm=sendDM(twURLS, user, user->screenName,"Json - E' solo un test!", Json);
+
+		log(INFO,"DM: %s", dm);
+
+		timeline_t favorites = readTimeLine(getRawFavorites(twURLS, user, Json));
+
+		onTimelineReading(&favorites);
+
+		uninitTimeline(&favorites);
+
+
+		if (user)
 			uninitUser(user);
 
 	}
 
+	if (twURLS)
+		uninitURLS(twURLS);
 
-	if(twURLS)uninitURLS(twURLS);
-
-	info("stop");
+	log(INFO,"stop");
 
 	uninitLog();
 

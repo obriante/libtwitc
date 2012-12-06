@@ -12,7 +12,6 @@ test_LDADD= \
 if DEBUG
 
 AM_CFLAGS = -g3 -O0 \
--DDEBUG \
 @EXTERN_DEP_CFLAGS@\
 @liblogc_CFLAGS@ \
 @libtwitc_CFLAGS@

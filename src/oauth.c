@@ -22,7 +22,7 @@
  */
 
 #include <twitc/stdredef.h>
-#include <twitc/debug.h>
+#include <logc/logc.h>
 #include <twitc/http.h>
 #include <twitc/oauth.h>
 
@@ -54,7 +54,7 @@ string_t getParameters(string_t argv[], int argc, const string_t param) //Improv
 		}
 	}
 
-	warning("Returned value: (NULL)");
+	log(WARNING,"Returned value: (NULL)");
 	return NULL;
 }
 
@@ -89,7 +89,7 @@ tokenRequest(const twitterURLS_t *twURLS, const string_t c_key, const string_t c
 		}
 	}
 
-	warning("Returned value: (NULL)");
+	log(WARNING,"Returned value: (NULL)");
 	return NULL;
 
 }
@@ -142,7 +142,7 @@ tokenTemp(const twitterURLS_t * twURLS, const string_t twitterKey, const string_
 			}
 		}
 	}
-	warning("Returned value: (NULL)");
+	log(WARNING,"Returned value: (NULL)");
 	return NULL;
 }
 
@@ -213,7 +213,7 @@ string_t tokenTempBrowser(const twitterURLS_t * twURLS, const string_t twitterKe
 		}
 	}
 
-	warning("Returned value: (NULL)");
+	log(WARNING,"Returned value: (NULL)");
 	return NULL;
 }
 
@@ -304,6 +304,6 @@ user_t *tokenAccess(const twitterURLS_t *twURLS, const string_t pin, const strin
 		}
 	}
 
-	warning("Returned value: (NULL)");
+	log(WARNING,"Returned value: (NULL)");
 	return NULL;
 }

@@ -1,32 +1,36 @@
-lib_LIBRARIES = libtwitc.a
-
-AM_CFLAGS = \
-@EXTERN_DEP_LIBS@
+noinst_LIBRARIES = libtwitc.a
 
 libtwitc_a_SOURCES = \
-debug.c \
 functions.c \
 user.c \
-oauth.c \
 http.c \
+oauth.c \
+status.c \
 timeline.c \
-twitter.c
+twitter.c \
+dm.c \
+favorites.c
 
-libtwitc_a_LIBADD =
+
+libtwitc_a_LIBADD = \
+@liblogc_LIBS@
 
 if DEBUG
 
-AM_CPPFLAGS = \
-	-DDEBUG \
-	-DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
+AM_CFLAGS = -g3 -O0 \
 	@EXTERN_DEP_CFLAGS@\
-	@libtwitc_CFLAGS@
+	@libtwitc_CFLAGS@ \
+	@liblogc_CFLAGS@
 
 else
 
-AM_CPPFLAGS = \
-	-DPROG_DIR=\""$(prefix)/share/@PACKAGE@"\" \
+AM_CFLAGS = -O2 \
 	@EXTERN_DEP_CFLAGS@\
-	@libtwitc_CFLAGS@
+	@libtwitc_CFLAGS@ \
+	@liblogc_CFLAGS@
 
 endif
+
+
+
+

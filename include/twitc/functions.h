@@ -22,12 +22,12 @@
 
 #include <twitc/stdredef.h>
 
-extern	byte_t		createDirectory	(const string_t);
-extern	string_t 	readRawTextFile	(const string_t);
+extern byte_t
+createDirectory(const string_t);
+extern string_t
+readRawTextFile(const string_t);
 
-
-extern	void		removeFile		(const string_t);
-extern	byte_t		initFileLock	(const string_t);
-extern	long		checkFileSize	(const string_t);
+extern byte_t
+initFileLock(const string_t);
 
 #endif /* FUNCTION_H_ */

@@ -17,7 +17,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <twitc/debug.h>
+#include <logc/logc.h>
 #include <twitc/stdredef.h>
 #include <twitc/user.h>
 
@@ -61,7 +61,7 @@ user_t *initUser(string_t id, string_t screenName, string_t token, string_t secr
 		return user;
 	}
 
-	warning("Returned value: (NULL)");
+	log(WARNING,"Returned value: (NULL)");
 	return NULL;
 }
 
@@ -101,7 +101,7 @@ void uninitUser(user_t *user)
 
 	}
 
-	warning("user_t uninitialized");
+	log(WARNING,"user_t uninitialized");
 	user=NULL;
 }
 
@@ -216,7 +216,7 @@ user_t *readUserFile(const string_t fileName)
 
 	}
 
-	warning("Returned value: (NULL)");
+	log(WARNING,"Returned value: (NULL)");
 	return NULL;
 }
 
