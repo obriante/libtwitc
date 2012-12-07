@@ -1,6 +1,6 @@
 /*
- * Copyright © 2012 - Patryk Rzucidlo <ptkdev@gmail.com>
- * Orazio Briante <orazio.briante@hotmail.it>
+ * Copyright © 2012 - Orazio Briante <orazio.briante@hotmail.it>
+ * Patryk Rzucidlo <ptkdev@gmail.com>
  * Alfredo Liguoro  <freddy@haxaddicts.net>
  *
  * Licensed under the GNU Lesser General Public License Version 3
