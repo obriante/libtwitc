@@ -1,4 +1,4 @@
-/* 
+/*
  * libtwitc - C Support Library for Twitter
  * Copyright (C) 2012 Orazio Briante orazio.briante@hotmail.it
  *                    Patryk Rzucidlo ptkdev@gmail.com
@@ -30,157 +30,194 @@
 
 #include <oauth.h>
 #include <libxml/xmlreader.h>
-
+#include <json.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C"{
 #endif
 
 
-  extern status_t
-    _getXmlStatus(const xmlDocPtr, xmlNodePtr);
+extern status_t _getXmlStatus(const xmlDocPtr, xmlNodePtr);
 
-  string_t
-  getRawTimeline(const twitterURLS_t * twURLS, timelineType_t timelineType,
-      const user_t * user)
-  {
 
-    string_t timeline = NULL;
-    string_t url = NULL;
+extern status_t _getJsonStatus(json_object *obj);
 
-    if (timelineType == home_timeline)
-      {
-        url = componeAPI_URL(twURLS, Http, HOME_TIMELINE_URL, Xml);
-      }
-    else if (timelineType == featured)
-      {
-        url = componeAPI_URL(twURLS, Http, FEATURED_USERS_URL, Xml);
-      }
-    else if (timelineType == friends_timeline)
-      {
-        url = componeAPI_URL(twURLS, Http, FRIENDS_TIMELINE_URL, Xml);
-      }
-    else if (timelineType == mentions)
-      {
-        url = componeAPI_URL(twURLS, Http, MENTIONS_URL, Xml);
-      }
-    else if (timelineType == user_timeline)
-      {
-        url = componeAPI_URL(twURLS, Http, USERTIMELINE_URL, Xml);
-      }
-    else if (timelineType == public_timeline)
-      {
-        url = componeAPI_URL(twURLS, Http, PUBLIC_TIMELINE_URL, Xml);
-      }
-    else
-      {
-        url = componeAPI_URL(twURLS, Http, PUBLIC_TIMELINE_URL, Xml);
-      }
 
-    if (url)
-      {
-        string_t req_url = NULL;
-        asprintf(&req_url, "%s%s", url, URL_SEP_QUES);
 
-        if (user)
-          req_url = oauth_sign_url2(req_url, NULL, OA_HMAC, NULL,
-              user->consumerKey, user->consumerSecretKey, user->token,
-              user->secretToken);
-        else
-          req_url = oauth_sign_url2(req_url, NULL, OA_HMAC, NULL, NULL, NULL,
-              NULL, NULL );
+string_t
+getRawTimeline(const twitterURLS_t * twURLS, timelineType_t timelineType,
+		const user_t * user, const ApiFormatType_t apiFormatType)
+{
 
-        if (req_url)
-          {
-            debug ("req_url :\t%s", req_url);
+	string_t timeline = NULL;
+	string_t url = NULL;
 
-            timeline = oauth_http_get(req_url, NULL );
+	if (timelineType == home_timeline)
+	{
+		url = componeAPI_URL(twURLS, Http, HOME_TIMELINE_URL, apiFormatType);
+	}
+	else if (timelineType == featured)
+	{
+		url = componeAPI_URL(twURLS, Http, FEATURED_USERS_URL, apiFormatType);
+	}
+	else if (timelineType == friends_timeline)
+	{
+		url = componeAPI_URL(twURLS, Http, FRIENDS_TIMELINE_URL, apiFormatType);
+	}
+	else if (timelineType == mentions)
+	{
+		url = componeAPI_URL(twURLS, Http, MENTIONS_URL, apiFormatType);
+	}
+	else if (timelineType == user_timeline)
+	{
+		url = componeAPI_URL(twURLS, Http, USERTIMELINE_URL, apiFormatType);
+	}
+	else if (timelineType == public_timeline)
+	{
+		url = componeAPI_URL(twURLS, Http, PUBLIC_TIMELINE_URL, apiFormatType);
+	}
+	else
+	{
+		url = componeAPI_URL(twURLS, Http, PUBLIC_TIMELINE_URL, apiFormatType);
+	}
 
-          }
+	if (url)
+	{
+		string_t req_url = NULL;
+		asprintf(&req_url, "%s%s", url, URL_SEP_QUES);
 
-        if (req_url)
-          free(req_url);
-        req_url = NULL;
-      }
+		if (user)
+			req_url = oauth_sign_url2(req_url, NULL, OA_HMAC, NULL,
+					user->consumerKey, user->consumerSecretKey, user->token,
+					user->secretToken);
+		else
+			req_url = oauth_sign_url2(req_url, NULL, OA_HMAC, NULL, NULL, NULL,
+					NULL, NULL );
 
-    if (url)
-      free(url);
-    url = NULL;
+		if (req_url)
+		{
+			debug ("req_url :\t%s", req_url);
 
-    if (!timeline)
-      log(WARNING,"Returned value: (NULL)");
+			timeline = oauth_http_get(req_url, NULL );
 
-    return timeline;
-  }
+		}
 
-  timeline_t
-  readTimeLine(const string_t rawTimeline)
-  {
+		if (req_url)
+			free(req_url);
+		req_url = NULL;
+	}
 
-    timeline_t timeline;
-    memset(&timeline, 0x00, sizeof(timeline));
+	if (url)
+		free(url);
+	url = NULL;
 
-    if(rawTimeline){
-        xmlDocPtr doc = xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL,
-            XML_PARSE_COMPACT);
+	if (!timeline)
+		log(WARNING,"Returned value: (NULL)");
 
-        if (doc)
-          {
-            xmlNodePtr cur = xmlDocGetRootElement(doc);
+	return timeline;
+}
 
-            while (cur)
-              {
 
-                if (!xmlStrcmp(cur->name, (const xmlChar *) "statuses"))
-                  {
+timeline_t readXmlTimeLine(const string_t rawTimeline)
+{
 
-                    debug ("cur->name: %s", cur->name);
+	timeline_t timeline;
+	memset(&timeline, 0x00, sizeof(timeline));
 
-                    cur = cur->xmlChildrenNode;
 
-                    int i = 0;
-                    while (cur)
-                      {
-                        if ((!xmlStrcmp(cur->name, (const xmlChar *) "status")))
-                          {
-                            debug ("cur->name: %s", cur->name);
+	xmlDocPtr doc = xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL, XML_PARSE_COMPACT);
 
-                            timeline.statuses[i] = _getXmlStatus(doc, cur);
+	if (doc)
+	{
+		xmlNodePtr cur = xmlDocGetRootElement(doc);
 
-                            debug (" %i) [%s] @%s: %s", i,
-                                timeline.statuses[i].created_at,
-                                timeline.statuses[i].user.screen_name,
-                                timeline.statuses[i].text);
-                            i++;
-                          }
+		while (cur)
+		{
 
-                        cur = cur->next;
+			if (!xmlStrcmp(cur->name, (const xmlChar *) "statuses"))
+			{
 
-                      }
-                  }
-              }
-          }
+				debug("cur->name: %s", cur->name);
 
-        if (doc)
-          xmlFreeDoc(doc);
-    }
-    return timeline;
-  }
+				cur = cur->xmlChildrenNode;
 
-  void uninitTimeline(timeline_t *timeline)
-  {
-    int i = 0;
+				int i=0;
+				while (cur)
+				{
+					if ((!xmlStrcmp(cur->name, (const xmlChar *)"status")))
+					{
+						debug("cur->name: %s", cur->name);
 
-    for (i = 0; i < MAX_NUM_TWEETS; i++)
-      {
-        if(timeline->statuses[i].text)
-          uninitStatus(timeline->statuses[i]);
-      }
+						timeline.statuses[i]=_getXmlStatus(doc, cur);
 
-    memset(timeline, 0x00, sizeof(timeline_t));
+						debug(" %i) [%s] @%s: %s", i, timeline.statuses[i].created_at, timeline.statuses[i].user.screen_name, timeline.statuses[i].text);
+						i++;
+					}
 
-  }
+					cur = cur->next;
+
+				}
+			}else
+				cur = cur->next;
+		}
+	}
+
+	if(doc)
+		xmlFreeDoc(doc);
+
+
+	return timeline;
+}
+
+timeline_t readJsonTimeLine(const string_t rawTimeline)
+{
+
+	int i=0;
+	timeline_t timeline;
+	memset(&timeline, 0x00, sizeof(timeline));
+
+	json_object *obj = json_tokener_parse(rawTimeline);
+
+	if(obj)
+	{
+		for(i=0; i<json_object_array_length(obj); i++)
+		{
+
+			if(json_object_object_get(obj,"errors"))
+								return timeline;
+
+			timeline.statuses[i]=_getJsonStatus(json_object_array_get_idx(obj,i));
+		}
+	}
+
+	return timeline;
+}
+
+
+timeline_t readTimeLine(const string_t rawTimeline)
+{
+
+	json_object *obj = json_tokener_parse(rawTimeline);
+
+	if(obj)
+		return readJsonTimeLine(rawTimeline);
+
+
+	return 	readXmlTimeLine(rawTimeline);
+}
+
+void uninitTimeline(timeline_t *timeline)
+{
+	int i = 0;
+
+	for (i = 0; i < MAX_NUM_TWEETS; i++)
+		if(timeline->statuses[i].text)
+			uninitStatus(timeline->statuses[i]);
+
+	memset(timeline, 0x00, sizeof(timeline_t));
+
+}
+
 
 #ifdef __cplusplus
 }

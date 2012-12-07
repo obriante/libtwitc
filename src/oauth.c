@@ -1,6 +1,6 @@
-/* 
- * Copyright © 2012 - Patryk Rzucidlo <ptkdev@gmail.com>
- * Orazio Briante <orazio.briante@hotmail.it>
+/*
+ * Copyright © 2012 - Orazio Briante <orazio.briante@hotmail.it>
+ * Patryk Rzucidlo <ptkdev@gmail.com>
  * Alfredo Liguoro  <freddy@haxaddicts.net>
  *
  * Licensed under the GNU Lesser General Public License Version 3
@@ -21,17 +21,14 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <logc/logc.h>
-
 #include <twitc/stdredef.h>
+#include <logc/logc.h>
 #include <twitc/http.h>
 #include <twitc/oauth.h>
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <oauth.h>
 
-/* 
+/*
  * This function split url-parameters with delimiter char
  * WARINING: use it with oauth_split_url_parameters() for variables rv
  *
@@ -42,314 +39,271 @@
  * Return = XXXXXXXXXX
  *
  */
-string_t
-getParameters(string_t argv[], int argc, const string_t param)	// Improved 
-// 
-// by
-// freddy
+string_t getParameters(string_t argv[], int argc, const string_t param) //Improved by freddy
 {
 
-  if (argv && argc && param)
-    {
-      int i = 0;
+	if(argv && argc && param)
+	{
+		int i=0;
 
-      for (i = 0; i < argc; i++)
-        {
-          if (!strncmp(argv[i], param, strlen(param)))
-            return (argv[i] + strcspn(argv[i], "=") + 1);
+		for(i = 0; i < argc; i++)
+		{
+			if(!strncmp(argv[i],param,strlen(param)))
+				return (argv[i] + strcspn(argv[i],"=") + 1);
 
-        }
-    }
+		}
+	}
 
-  log(WARNING,"Returned value: (NULL)");
-  return NULL ;
+	log(WARNING,"Returned value: (NULL)");
+	return NULL;
 }
 
+
 string_t
-tokenRequest(const twitterURLS_t * twURLS, const string_t c_key,
-    const string_t c_secret)
+tokenRequest(const twitterURLS_t *twURLS, const string_t c_key, const string_t c_secret)
 {
 
-  string_t tempKeyParameters = NULL;
+	if(twURLS && c_key && c_secret)
+	{
 
-  if (twURLS && c_key && c_secret)
-    {
+		string_t req_url=componeOAUTH_URL(twURLS, Https, REQTOKEN_URL, None);
 
-      string_t req_url = componeOAUTH_URL(twURLS, Http, REQTOKEN_URL, None);
+		string_t postarg = NULL;
+		req_url = oauth_sign_url2(req_url, NULL, OA_HMAC, NULL, c_key, c_secret, NULL, NULL);
 
-      string_t postarg = NULL;
-      req_url = oauth_sign_url2(req_url, NULL, OA_HMAC, NULL, c_key, c_secret,
-          NULL, NULL );
+		if(postarg)
+			debug("postarg: %s", postarg);
 
-      if (postarg)
-        debug ("postarg: %s", postarg);
+		if(req_url)
+		{
+			debug("req_url:\t%s",req_url);
 
-      if (req_url)
-        {
-          debug ("req_url:\t%s", req_url);
+			string_t tempKeyParameters = oauth_http_get(req_url, postarg);
 
-          tempKeyParameters = oauth_http_get(req_url, postarg);
+			if(tempKeyParameters)
+			{
+				debug("tempKeyParameters:\t%s",tempKeyParameters);
 
-          if (tempKeyParameters)
-            debug ("tempKeyParameters:\t%s", tempKeyParameters);
+				return tempKeyParameters;
+			}
+		}
+	}
 
-        }
-
-      if (req_url)
-        free(req_url);
-      if (postarg)
-        free(postarg);
-
-      req_url = NULL;
-      postarg = NULL;
-    }
-
-  if (!tempKeyParameters)
-    log(WARNING,"Returned value: (NULL)");
-
-  return tempKeyParameters;
+	log(WARNING,"Returned value: (NULL)");
+	return NULL;
 
 }
 
-/* 
+
+
+/*
  * Main function for oAuth access
  *
  * Authorize Twitter Account
  *
  */
 string_t
-tokenTemp(const twitterURLS_t * twURLS, const string_t twitterKey,
-    const string_t twitterKeySecret)
+tokenTemp(const twitterURLS_t * twURLS, const string_t twitterKey, const string_t twitterKeySecret)
 {
-  string_t tmpToken = NULL;
 
-  /* 
-   * @Input: TwitCrusader Consumer-Key
-   * @Return Url-Parameters with Consumer-Temp-Key and Consumer-Temp-Key-Secret
-   *
-   */
-  string_t tempKeyURL = tokenRequest(twURLS, twitterKey, twitterKeySecret);
+	int rc;
+	string_t *rv=NULL;
 
-  if (tempKeyURL)
-    {
-      debug ("tempKeyURL:\t%s", tempKeyURL);
+	/*
+	 * @Input: TwitCrusader Consumer-Key
+	 * @Return Url-Parameters with Consumer-Temp-Key and Consumer-Temp-Key-Secret
+	 *
+	 */
+	string_t tempKeyURL = tokenRequest(twURLS, twitterKey, twitterKeySecret);
 
-      /* 
-       * split url and get Temp-Key 
-       */
-      string_t *rv = NULL;
-      int rc = oauth_split_url_parameters(tempKeyURL, &rv);
-      string_t tempKey = getParameters(rv, rc, "oauth_token");
+	if(tempKeyURL)
+	{
+		debug("tempKeyURL:\t%s", tempKeyURL);
 
-      if (tempKey)
-        {
-          debug ("tempKey:\t%s", tempKey);
+		/* split url and get Temp-Key */
+		rc = oauth_split_url_parameters(tempKeyURL, &rv);
+		string_t tempKey = getParameters(rv, rc, "oauth_token");
 
-          /* 
-           * Save all Twitter-Key at /tmp folder
-           * Temp-Key + Temp-Key-Secret + TwitCrusader Key + TwitCrusader Key Secret
-           */
-          string_t tmpToken;
-          asprintf(&tmpToken, "%s%s%s%s%s", tempKeyURL, "&c_key=", twitterKey,
-              "&c_key_secret=", twitterKeySecret);
+		if(tempKey)
+		{
+			debug("tempKey:\t%s", tempKey);
 
-          if (tmpToken)
-            debug ("tmpToken:\t%s", tmpToken);
+			/*
+			 * Save all Twitter-Key at /tmp folder
+			 * Temp-Key + Temp-Key-Secret + TwitCrusader Key + TwitCrusader Key Secret
+			 */
+			string_t tmpToken;
+			asprintf(&tmpToken, "%s%s%s%s%s", tempKeyURL, "&c_key=", twitterKey, "&c_key_secret=", twitterKeySecret);
+			if(tmpToken)
+			{
+				debug("tmpToken:\t%s", tmpToken);
 
-        }
-
-      if (tempKey)
-        free(tempKey);
-
-      tempKey = NULL;
-
-    }
-
-  if (!tmpToken)
-    log(WARNING,"Returned value: (NULL)");
-
-  return tmpToken;
+				return tmpToken;
+			}
+		}
+	}
+	log(WARNING,"Returned value: (NULL)");
+	return NULL;
 }
 
-/* 
+
+
+/*
  * Main function for oAuth access
  *
  * Authorize Twitter Account
  *
  */
-string_t
-tokenTempBrowser(const twitterURLS_t * twURLS, const string_t twitterKey,
-    const string_t twitterKeySecret)
+string_t tokenTempBrowser(const twitterURLS_t * twURLS, const string_t twitterKey, const string_t twitterKeySecret )
 {
 
-  string_t tmpToken = NULL;
+	int rc;
+	string_t *rv=NULL;
 
-  string_t tempKeyURL = tokenRequest(twURLS, twitterKey, twitterKeySecret);
+	/*
+	 * @Input: TwitCrusader Consumer-Key
+	 * @Return Url-Parameters with Consumer-Temp-Key and Consumer-Temp-Key-Secret
+	 *
+	 */
+	string_t tempKeyURL = tokenRequest(twURLS, twitterKey, twitterKeySecret);
 
-  if (tempKeyURL)
-    {
-      debug ("tempKeyURL:\t%s", tempKeyURL);
+	if(tempKeyURL)
+	{
+		debug("tempKeyURL:\t%s",tempKeyURL);
 
-      /* 
-       * split url and get Temp-Key 
-       */
-      string_t *rv = NULL;
-      int rc = oauth_split_url_parameters(tempKeyURL, &rv);
-      string_t tempKey = getParameters(rv, rc, "oauth_token");
+		/* split url and get Temp-Key */
+		rc = oauth_split_url_parameters(tempKeyURL, &rv);
+		string_t tempKey = getParameters(rv, rc, "oauth_token");
 
-      if (tempKey)
-        {
-          debug ("tempKey:\t%s", tempKey);
+		if(tempKey)
+		{
+			debug("tempKey:\t%s",tempKey);
 
-          /* 
-           * Save all Twitter-Key at /tmp folder
-           * Temp-Key + Temp-Key-Secret + TwitCrusader Key + TwitCrusader Key Secret
-           */
-          asprintf(&tmpToken, "%s%s%s%s%s", tempKeyURL, "&c_key=", twitterKey,
-              "&c_key_secret=", twitterKeySecret);
+			/*
+			 * Save all Twitter-Key at /tmp folder
+			 * Temp-Key + Temp-Key-Secret + TwitCrusader Key + TwitCrusader Key Secret
+			 */
+			char* tmpToken;
 
-          if (tmpToken)
-            {
-              debug ("tmpToken:\t%s", tmpToken);
+			asprintf(&tmpToken, "%s%s%s%s%s", tempKeyURL, "&c_key=", twitterKey, "&c_key_secret=", twitterKeySecret);
 
-              /* 
-               * Generate a Twitter-URL for get user-PIN 
-               */
-              string_t req_url = componeOAUTH_URL(twURLS, Http, AUTHORIZE_URL,
-                  None);
+			if(tmpToken)
+			{
+				debug("tmpToken:\t%s",tmpToken);
 
-              string_t url = NULL;
-              asprintf(&url, "%s%s%s%s%s", req_url, URL_SEP_QUES, "oauth_token",
-                  "=", tempKey);
+				/* Generate a Twitter-URL for get user-PIN */
+				string_t cmd=NULL;
+				string_t url=NULL;
 
-              string_t cmd = NULL;
-              asprintf(&cmd, "xdg-open \"%s\"", url);
-              if (cmd)
-                {
-                  debug ("cmd:\t%s", cmd);
-                  system(cmd);
+				string_t req_url=componeOAUTH_URL(twURLS, Https, AUTHORIZE_URL, None);
 
-                  if (cmd)
-                    free(cmd);
-                  cmd = NULL;
-                }
+				asprintf(&url,"%s%s%s%s%s", req_url, URL_SEP_QUES, "oauth_token","=",tempKey);
 
-              if (req_url)
-                free(req_url);
-              if (url)
-                free(url);
+				asprintf(&cmd, "xdg-open \"%s\"", url);
+				if(cmd)
+				{
+					debug("cmd:\t%s", cmd);
 
-              req_url = NULL;
-              url = NULL;
-            }
-        }
-    }
+					/* Open URL and user get PIN */
+					system(cmd);
 
-  if (!tmpToken)
-    log(WARNING,"Returned value: (NULL)");
+					return tmpToken;
+				}
+			}
+		}
+	}
 
-  return tmpToken;
+	log(WARNING,"Returned value: (NULL)");
+	return NULL;
 }
 
-/* 
+
+/*
  * Validate a PIN with Temp-Key and save all user-info
  *
  * @Return User-Key, User-Secret-Key, Username, User-ID and other
  * All info is saved at ~/.twc/config/user file
  *
  */
-user_t *
-tokenAccess(const twitterURLS_t * twURLS, const string_t pin,
-    const string_t tmpToken)
+user_t *tokenAccess(const twitterURLS_t *twURLS, const string_t pin, const string_t tmpToken)
 {
 
-  user_t *user = NULL;
+	string_t *rv=NULL;
 
-  if (twURLS && pin && tmpToken)
-    {
-      debug ("tmpToken:\t%s", tmpToken);debug ("pin:\t%s", pin);
+	debug("tmpToken:\t%s", tmpToken);
+	debug("pin:\t%s", pin);
 
-      string_t *rv = NULL;
-      int rc = oauth_split_url_parameters(tmpToken, &rv);
+	if(twURLS && pin && tmpToken)
+	{
+		debug("tmpToken:\t%s", tmpToken);
+		debug("pin:\t%s", pin);
 
-      string_t tempKey = getParameters(rv, rc, "oauth_token");
-      string_t tempKeySecret = getParameters(rv, rc, "oauth_token_secret");
-      string_t consumerKey = getParameters(rv, rc, "c_key");
-      string_t consumerSecretKey = getParameters(rv, rc, "c_key_secret");
+		int rc = oauth_split_url_parameters(tmpToken, &rv);
 
-      if (tempKey && tempKeySecret && consumerKey && consumerSecretKey)
-        {
-          debug ("tempKey:\t%s", tempKey);debug ("tempKeySecret:\t%s", tempKeySecret);debug ("consumerKey:\t%s", consumerKey);debug ("consumerSecretKey:\t%s:", consumerSecretKey);
+		string_t tempKey=getParameters(rv, rc, "oauth_token");
+		string_t tempKeySecret=getParameters(rv, rc, "oauth_token_secret");
+		string_t consumerKey=getParameters(rv, rc, "c_key");
+		string_t consumerSecretKey=getParameters(rv, rc, "c_key_secret");
 
-          /* 
-           * Generate a URL, this verify a PIN For validate PIN is
-           * necessary: TwitCrusader consumer key (and secret) with a 2
-           * Temp-Keys All keys are saved in /tmp/token file 
-           */
-          string_t accessURL = componeOAUTH_URL(twURLS, Http, ACCESS_TOKEN_URL,
-              None);
-          asprintf(&accessURL, "%s%s%s%s%s", accessURL, URL_SEP_QUES,
-              "oauth_verifier", "=", pin);
+		if(tempKey && tempKeySecret && consumerKey && consumerSecretKey)
+		{
+			debug("tempKey:\t%s", tempKey);
+			debug("tempKeySecret:\t%s", tempKeySecret);
+			debug("consumerKey:\t%s", consumerKey);
+			debug("consumerSecretKey:\t%s:", consumerSecretKey);
 
-          if (accessURL)
-            {
-              debug ("accessURL:\t%s", accessURL);
-              string_t postarg = NULL;
-              string_t verifyPIN = oauth_sign_url2(accessURL, &postarg, OA_HMAC,
-                  NULL, consumerKey, consumerSecretKey, tempKey, tempKeySecret);
+			/* Generate a URL, this verify a PIN
+			 * For validate PIN is necessary: TwitCrusader consumer key (and secret) with a 2 Temp-Keys
+			 * All keys are saved in /tmp/token file
+			 */
+			string_t accessURL=componeOAUTH_URL(twURLS, Https, ACCESS_TOKEN_URL, None);
 
-              if (postarg)
-                debug ("postarg: %s", postarg);
+			asprintf(&accessURL,"%s%s%s%s%s", accessURL, URL_SEP_QUES, "oauth_verifier","=",pin);
 
-              string_t twitterUserKey = oauth_http_post(verifyPIN, postarg);
+			if(accessURL)
+			{
+				debug("accessURL:\t%s", accessURL);
+				string_t postarg = NULL;
+				string_t verifyPIN = oauth_sign_url2(accessURL, &postarg, OA_HMAC, NULL, consumerKey, consumerSecretKey, tempKey, tempKeySecret);
 
-              debug ("twitterUserKey:\t%s", twitterUserKey);
+				if(postarg)
+					debug("postarg: %s", postarg);
 
-              if (twitterUserKey)
-                {
+				string_t twitterUserKey = oauth_http_post(verifyPIN,postarg);
 
-                  /* 
-                   * Split all parameters and get User-ID, Username, and 
-                   * User-Keys 
-                   */
-                  rc = oauth_split_url_parameters(twitterUserKey, &rv);
+				debug("twitterUserKey:\t%s", twitterUserKey);
 
-                  string_t token = getParameters(rv, rc, "oauth_token");
-                  string_t secretToken = getParameters(rv, rc,
-                      "oauth_token_secret");
-                  string_t id = getParameters(rv, rc, "user_id");
-                  string_t screenName = getParameters(rv, rc, "screen_name");
+				if (twitterUserKey)
+				{
 
-                  if (token && secretToken && id && screenName)
-                    {
-                      /*DEBUG*/debug ("screenName:\t%s", screenName);debug ("id:\t%s", id);debug ("consumerKey:\t%s", consumerKey);debug ("consumerSecretKey:\t%s", consumerSecretKey);debug ("token:\t%s", token);debug ("secretToken:\t%s", secretToken);
+					/* Split all parameters and get User-ID, Username, and User-Keys */
+					rc = oauth_split_url_parameters(twitterUserKey, &rv);
 
-                      user = initUser(id, screenName, token, secretToken,
-                          consumerKey, consumerSecretKey);
+					string_t token=getParameters(rv, rc, "oauth_token");
+					string_t secretToken=getParameters(rv, rc, "oauth_token_secret");
+					string_t id=getParameters(rv, rc, "user_id");
+					string_t screenName=getParameters(rv, rc, "screen_name");
 
-                    }
-                }
+					if(token && secretToken && id && screenName)
+					{
+						/*DEBUG*/
+						debug("screenName:\t%s",screenName);
+						debug("id:\t%s",id);
+						debug("consumerKey:\t%s", consumerKey);
+						debug("consumerSecretKey:\t%s", consumerSecretKey);
+						debug("token:\t%s", token);
+						debug("secretToken:\t%s", secretToken);
 
-              if (accessURL)
-                free(accessURL);
-              if (postarg)
-                free(postarg);
-              if (verifyPIN)
-                free(verifyPIN);
-              if (twitterUserKey)
-                free(twitterUserKey);
 
-              twitterUserKey = NULL;
-              accessURL = NULL;
-              postarg = NULL;
-              verifyPIN = NULL;
+						user_t *user=initUser(id, screenName, token, secretToken, consumerKey, consumerSecretKey);
 
-            }
-        }
-    }
+						return user;
+					}
+				}
+			}
+		}
+	}
 
-  if (!user)
-    log(WARNING,"Returned value: (NULL)");
-
-  return user;
+	log(WARNING,"Returned value: (NULL)");
+	return NULL;
 }

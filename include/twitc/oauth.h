@@ -1,6 +1,6 @@
 /*
- * Copyright © 2012 - Patryk Rzucidlo <ptkdev@gmail.com>
- * Orazio Briante <orazio.briante@hotmail.it>
+ * Copyright © 2012 - Orazio Briante <orazio.briante@hotmail.it>
+ * Patryk Rzucidlo <ptkdev@gmail.com>
  * Alfredo Liguoro  <freddy@haxaddicts.net>
  *
  * Licensed under the GNU Lesser General Public License Version 3
@@ -28,17 +28,26 @@
 #include <twitc/twitter.h>
 #include <twitc/user.h>
 
-extern string_t
-tokenRequest(const twitterURLS_t *, const string_t c_key, const string_t);
 
-extern string_t
-tokenTemp(const twitterURLS_t *, const string_t, const string_t);
+extern	string_t
+tokenRequest		(const twitterURLS_t *,
+		const string_t c_key,
+		const string_t);
 
-extern string_t
-tokenTempBrowser(const twitterURLS_t *, const string_t, const string_t);
+extern	string_t
+tokenTemp			(const twitterURLS_t *,
+		const string_t,
+		const string_t);
 
-extern user_t
-*
-tokenAccess(const twitterURLS_t *, const string_t, const string_t);
+extern	string_t
+tokenTempBrowser	(const twitterURLS_t *,
+		const string_t,
+		const string_t);
+
+extern	user_t
+*tokenAccess		(const twitterURLS_t *,
+		const string_t,
+		const string_t );
+
 
 #endif /* OAUTH_H_ */

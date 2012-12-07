@@ -1,4 +1,4 @@
-/* 
+/*
  * libtwitc - C Support Library for Twitter
  * Copyright (C) 2012 Orazio Briante orazio.briante@hotmail.it
  *                    Patryk Rzucidlo ptkdev@gmail.com
@@ -19,73 +19,65 @@
  */
 
 #include <logc/logc.h>
-
 #include <twitc/twitter.h>
-#include <twitc/user.h>
-#include <twitc/http.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <oauth.h>
 
 #ifdef __cplusplus
-extern "C"
-  {
+extern "C"{
 #endif
 
-twitterURLS_t *
-initURLS(const string_t oauth_URL, const string_t api_URL,
-    const string_t serch_URL)
+twitterURLS_t *initURLS(const string_t oauth_URL, const string_t api_URL, const string_t	serch_URL, const ApiFormatType_t apiFormatType)
 {
 
-  if (oauth_URL && api_URL && serch_URL)
-    {
+	if(oauth_URL && api_URL && serch_URL)
+	{
 
-      twitterURLS_t *twURLS = (twitterURLS_t *) malloc(sizeof(twitterURLS_t));
+		twitterURLS_t *twURLS=(twitterURLS_t *)malloc(sizeof(twitterURLS_t));
 
-      int error = asprintf(&twURLS->api_URL, "%s", api_URL);
-      debug ("twURLS->api_URL:\t\t\t%s", twURLS->api_URL);
+		int error=asprintf(&twURLS->api_URL,"%s",api_URL);
+		debug("twURLS->api_URL:\t\t\t%s", twURLS->api_URL);
 
-      error = asprintf(&twURLS->oauth_URL, "%s", oauth_URL);
+		error=asprintf(&twURLS->oauth_URL,"%s",oauth_URL);
+		debug("twURLS->oauth_URL:\t\t\t%s", twURLS->oauth_URL);
 
-      debug ("twURLS->oauth_URL:\t\t\t%s", twURLS->oauth_URL);
+		error=asprintf(&twURLS->serch_URL,"%s",serch_URL);
+		debug("twURLS->serch_URL:\t\t\t%s", twURLS->serch_URL);
 
-      error = asprintf(&twURLS->serch_URL, "%s", serch_URL);
+		twURLS->apiFormatType=apiFormatType;
 
-      debug ("twURLS->serch_URL:\t\t\t%s", twURLS->serch_URL);
+		return twURLS;
+	}
 
-      return twURLS;
-    }
-
-  return NULL ;
+	return NULL;
 }
 
-void
-uninitURLS(twitterURLS_t * twURLS)
+void uninitURLS(twitterURLS_t *twURLS)
 {
 
-  if (twURLS)
-    {
-      if (twURLS->api_URL)
-        free(twURLS->api_URL);
+	if(twURLS)
+	{
+		if(twURLS->api_URL)
+			free(twURLS->api_URL);
 
-      if (twURLS->oauth_URL)
-        free(twURLS->oauth_URL);
+		if(twURLS->oauth_URL)
+			free(twURLS->oauth_URL);
 
-      if (twURLS->serch_URL)
-        free(twURLS->serch_URL);
+		if(twURLS->serch_URL)
+			free(twURLS->serch_URL);
 
-      twURLS->api_URL = NULL;
-      twURLS->oauth_URL = NULL;
-      twURLS->serch_URL = NULL;
+		twURLS->api_URL=NULL;
+		twURLS->oauth_URL=NULL;
+		twURLS->serch_URL=NULL;
 
-      free(twURLS);
-    }
+		free(twURLS);
+	}
 
-  log(WARNING,"twitterURLS_t uninitialized");
-  twURLS = NULL;
+	log(WARNING,"twitterURLS_t uninitialized");
+	twURLS=NULL;
 
 }
 

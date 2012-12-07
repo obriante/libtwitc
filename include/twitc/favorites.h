@@ -26,6 +26,6 @@
 #include <twitc/twitter.h>
 #include <twitc/user.h>
 
-string_t getRawFavorites(const twitterURLS_t *, const user_t *);
+string_t getRawFavorites(const twitterURLS_t *, const user_t *, const ApiFormatType_t apiFormatType);
 
 #endif /* FAVORITES_H_ */

@@ -87,7 +87,7 @@ extern status_t
 getStatus(const string_t);
 
 extern string_t
-updateStatus(const twitterURLS_t *, const user_t *, const string_t);
+updateStatus(const twitterURLS_t * twURLS, const user_t * user, const string_t msg, const ApiFormatType_t apiFormatType);
 
 extern void
 uninitTwitterUser(twitterUser_t);

@@ -32,10 +32,10 @@
 #include <oauth.h>
 
 
-string_t getRawFavorites(const twitterURLS_t *twURLS, const user_t *user)
+string_t getRawFavorites(const twitterURLS_t *twURLS, const user_t *user, const ApiFormatType_t apiFormatType)
 {
   string_t output = NULL;
-  string_t url = componeAPI_URL(twURLS, Http, FAVORITESGET_URL, Xml);
+  string_t url = componeAPI_URL(twURLS, Http, FAVORITESGET_URL, apiFormatType);
 
 
   if (url)
