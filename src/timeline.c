@@ -157,7 +157,8 @@ timeline_t readXmlTimeLine(const string_t rawTimeline)
 					cur = cur->next;
 
 				}
-			}
+			}else
+				cur = cur->next;
 		}
 	}
 
@@ -182,9 +183,10 @@ timeline_t readJsonTimeLine(const string_t rawTimeline)
 		for(i=0; i<json_object_array_length(obj); i++)
 		{
 
-			json_object *status=json_object_array_get_idx(obj,i);
+			if(json_object_object_get(obj,"errors"))
+								return timeline;
 
-			timeline.statuses[i]=_getJsonStatus(status);
+			timeline.statuses[i]=_getJsonStatus(json_object_array_get_idx(obj,i));
 		}
 	}
 

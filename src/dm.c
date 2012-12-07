@@ -33,6 +33,7 @@
 #include <oauth.h>
 #include <libxml/xmlreader.h>
 
+#include <json.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -73,18 +74,19 @@ _getRawDM(string_t url, const twitterURLS_t * twURLS, const user_t * user)
 }
 
 string_t
-getRawDM(const twitterURLS_t * twURLS, const user_t * user, const ApiFormatType_t apiFormatType)
+getRawDM(const twitterURLS_t * twURLS, const user_t * user,  const ApiFormatType_t apiFormatType)
 {
-	return _getRawDM(componeAPI_URL(twURLS, Https, DIRECTMESSAGES_URL, apiFormatType), twURLS, user);
+  return _getRawDM(componeAPI_URL(twURLS, Https, DIRECTMESSAGES_URL, apiFormatType), twURLS, user);
 }
 
 
 string_t
-getRawSentDM(const twitterURLS_t * twURLS, const user_t * user, const ApiFormatType_t apiFormatType)
+getRawSentDM(const twitterURLS_t * twURLS, const user_t * user,  const ApiFormatType_t apiFormatType)
 {
-	return _getRawDM(componeAPI_URL(twURLS, Https, DIRECTMESSAGESSENT_URL, apiFormatType), twURLS, user);
+  return _getRawDM(componeAPI_URL(twURLS, Https, DIRECTMESSAGESSENT_URL, apiFormatType), twURLS, user);
 
 }
+
 
 string_t
 sendDM(const twitterURLS_t * twURLS, const user_t * user, const string_t to_rx, const string_t msg, const ApiFormatType_t apiFormatType)
@@ -369,15 +371,14 @@ direct_message_t _getXmlDM(const xmlDocPtr doc, xmlNodePtr cur)
 
 
 direct_messages_t
-readDMs(const string_t rawDM)
+getXmlDMs(const string_t rawDM)
 {
 
 	direct_messages_t direct_messages;
 	memset(&direct_messages, 0x00, sizeof(direct_messages));
 
 	if(rawDM){
-		xmlDocPtr doc = xmlReadMemory(rawDM, strlen(rawDM), "", NULL,
-				XML_PARSE_COMPACT);
+		xmlDocPtr doc = xmlReadMemory(rawDM, strlen(rawDM), "", NULL, XML_PARSE_COMPACT);
 
 		if (doc)
 		{
@@ -409,7 +410,8 @@ readDMs(const string_t rawDM)
 						cur = cur->next;
 
 					}
-				}
+				}else
+					cur = cur->next;
 			}
 		}
 
@@ -420,6 +422,127 @@ readDMs(const string_t rawDM)
 	return direct_messages;
 }
 
+dm_user_t _getJsonDMUser(json_object *obj)
+{
+
+	dm_user_t dm_user;
+	memset(&dm_user, 0x00, sizeof(dm_user_t));
+
+	asprintf(&dm_user.id, "%s", json_object_to_json_string(json_object_object_get(obj,"id")));
+	asprintf(&dm_user.name, "%s", json_object_to_json_string(json_object_object_get(obj,"name")));
+	asprintf(&dm_user.screen_name, "%s", json_object_to_json_string(json_object_object_get(obj,"screen_name")));
+	asprintf(&dm_user.location, "%s", json_object_to_json_string(json_object_object_get(obj,"location")));
+	asprintf(&dm_user.description, "%s", json_object_to_json_string(json_object_object_get(obj,"description")));
+	asprintf(&dm_user.profile_image_url, "%s", json_object_to_json_string(json_object_object_get(obj,"profile_image_url")));
+	asprintf(&dm_user.profile_image_url_https, "%s", json_object_to_json_string(json_object_object_get(obj,"profile_image_url_https")));
+	asprintf(&dm_user.url, "%s", json_object_to_json_string(json_object_object_get(obj,"url")));
+	asprintf(&dm_user.protected, "%s", json_object_to_json_string(json_object_object_get(obj,"protected")));
+	asprintf(&dm_user.followers_count, "%s", json_object_to_json_string(json_object_object_get(obj,"followers_count")));
+	asprintf(&dm_user.profile_background_color, "%s", json_object_to_json_string(json_object_object_get(obj,"profile_background_color")));
+	asprintf(&dm_user.profile_text_color, "%s", json_object_to_json_string(json_object_object_get(obj,"profile_text_color")));
+	asprintf(&dm_user.profile_link_color, "%s", json_object_to_json_string(json_object_object_get(obj,"profile_link_color")));
+	asprintf(&dm_user.profile_sidebar_fill_color, "%s", json_object_to_json_string(json_object_object_get(obj,"profile_sidebar_fill_color")));
+	asprintf(&dm_user.profile_sidebar_border_color, "%s", json_object_to_json_string(json_object_object_get(obj,"profile_sidebar_border_color")));
+	asprintf(&dm_user.friends_count, "%s", json_object_to_json_string(json_object_object_get(obj,"friends_count")));
+	asprintf(&dm_user.created_at, "%s", json_object_to_json_string(json_object_object_get(obj,"created_at")));
+	asprintf(&dm_user.favourites_count, "%s", json_object_to_json_string(json_object_object_get(obj,"favourites_count")));
+	asprintf(&dm_user.utc_offset, "%s", json_object_to_json_string(json_object_object_get(obj,"utc_offset")));
+	asprintf(&dm_user.time_zone, "%s", json_object_to_json_string(json_object_object_get(obj,"time_zone")));
+	asprintf(&dm_user.profile_background_image_url, "%s", json_object_to_json_string(json_object_object_get(obj,"profile_background_image_url")));
+	asprintf(&dm_user.profile_background_image_url_https, "%s", json_object_to_json_string(json_object_object_get(obj,"profile_background_image_url_https")));
+	asprintf(&dm_user.profile_background_tile, "%s", json_object_to_json_string(json_object_object_get(obj,"profile_background_tile")));
+	asprintf(&dm_user.profile_use_background_image, "%s", json_object_to_json_string(json_object_object_get(obj,"profile_use_background_image")));
+	asprintf(&dm_user.notifications, "%s", json_object_to_json_string(json_object_object_get(obj,"notifications")));
+	asprintf(&dm_user.geo_enabled, "%s", json_object_to_json_string(json_object_object_get(obj,"geo_enabled")));
+	asprintf(&dm_user.verified, "%s", json_object_to_json_string(json_object_object_get(obj,"verified")));
+	asprintf(&dm_user.following, "%s", json_object_to_json_string(json_object_object_get(obj,"following")));
+	asprintf(&dm_user.statuses_count, "%s", json_object_to_json_string(json_object_object_get(obj,"statuses_count")));
+	asprintf(&dm_user.lang, "%s", json_object_to_json_string(json_object_object_get(obj,"lang")));
+	asprintf(&dm_user.contributors_enabled, "%s", json_object_to_json_string(json_object_object_get(obj,"contributors_enabled")));
+	asprintf(&dm_user.follow_request_sent, "%s", json_object_to_json_string(json_object_object_get(obj,"follow_request_sent")));
+	asprintf(&dm_user.listed_count, "%s", json_object_to_json_string(json_object_object_get(obj,"listed_count")));
+	asprintf(&dm_user.show_all_inline_media, "%s", json_object_to_json_string(json_object_object_get(obj,"show_all_inline_media")));
+	asprintf(&dm_user.default_profile, "%s", json_object_to_json_string(json_object_object_get(obj,"default_profile")));
+	asprintf(&dm_user.default_profile_image, "%s", json_object_to_json_string(json_object_object_get(obj,"default_profile_image")));
+	asprintf(&dm_user.is_translator, "%s", json_object_to_json_string(json_object_object_get(obj,"is_translator")));
+
+	return dm_user;
+}
+
+
+
+direct_message_t _getJsonDM(json_object *obj){
+
+	direct_message_t direct_message;
+	memset(&direct_message, 0x00, sizeof(direct_message));
+
+	if(obj)
+	{
+
+		asprintf(&direct_message.id, "%s", json_object_to_json_string(json_object_object_get(obj,"id")));
+		asprintf(&direct_message.sender_id, "%s", json_object_to_json_string(json_object_object_get(obj,"sender_id")));
+		asprintf(&direct_message.text, "%s", json_object_to_json_string(json_object_object_get(obj,"text")));
+		asprintf(&direct_message.recipient_id, "%s", json_object_to_json_string(json_object_object_get(obj,"recipient_id")));
+		asprintf(&direct_message.created_at, "%s", json_object_to_json_string(json_object_object_get(obj,"created_at")));
+		asprintf(&direct_message.sender_screen_name, "%s", json_object_to_json_string(json_object_object_get(obj,"sender_screen_name")));
+		asprintf(&direct_message.recipient_screen_name, "%s", json_object_to_json_string(json_object_object_get(obj,"recipient_screen_name")));
+
+		direct_message.sender=_getJsonDMUser(json_object_object_get(obj,"sender"));
+		direct_message.recipient=_getJsonDMUser(json_object_object_get(obj,"recipient"));
+
+	}
+
+	return direct_message;
+}
+
+
+direct_messages_t
+getJsonDMs(const string_t rawDM){
+
+	int i=0;
+	direct_messages_t direct_messages;
+	memset(&direct_messages, 0x00, sizeof(direct_messages));
+
+	if(rawDM){
+		json_object *obj = json_tokener_parse(rawDM);
+
+		if(obj)
+		{
+			for(i=0; i<json_object_array_length(obj); i++)
+			{
+				if(json_object_object_get(obj,"errors"))
+					return direct_messages;
+
+				debug("json_object_array_length %i", json_object_array_length(obj) );
+
+				if( json_object_array_get_idx(obj,i)){
+					direct_messages.directMessage[i]=_getJsonDM(json_object_array_get_idx(obj,i));
+
+					debug (" %i) [%s] @%s: %s", i,direct_messages.directMessage[i].created_at, direct_messages.directMessage[i].sender_screen_name, direct_messages.directMessage[i].text);
+				}
+
+			}
+
+			json_object_put(obj);
+		}
+	}
+
+	return direct_messages;
+}
+
+
+
+direct_messages_t
+getDMs(const string_t rawDM)
+{
+
+	json_object *obj = json_tokener_parse(rawDM);
+
+	if(obj)
+		return getJsonDMs(rawDM);
+
+	return getXmlDMs(rawDM);
+}
 
 
 void

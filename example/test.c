@@ -34,8 +34,9 @@
 
 #define LOG_FILE	"/tmp/test.log"
 
-#define TWITTER_KEY "0xdBqXjFX4LBTLyoc5Dg"	// USE YOUR APPLICATION KEY
-#define TWITTER_KEY_SECRET "VIr57NPcgxxpJ2esI7brKGhth06EslbH0UDD3ImFB8"	// USE YOUR APPLICATION KEY
+#define TWITTER_KEY "0xdBqXjFX4LBTLyoc5Dg"
+#define TWITTER_KEY_SECRET "VIr57NPcgxxpJ2esI7brKGhth06EslbH0UDD3ImFB8"
+
 #define TWC_UPDATES_URL "https://raw.github.com/KernelMonkey/libtwitc/master/VERSION"
 
 string_t programDir;
@@ -135,6 +136,63 @@ void onDMsReading(direct_messages_t *DMs)
 }
 
 
+void test(const ApiFormatType_t apiFormatType){
+
+	user_t *user = readUserFile(configFile);
+
+	//OAUTH TEST
+	twitterURLS_t *twURLS = initURLS(OAUTH_URL_DEFAULT, API_URL_DEFAULT, SEARCH_URL_DEFAULT, apiFormatType);
+
+
+	if (!user)
+		user = autentication(twURLS, configFile);
+
+	if (user)
+	{
+		string_t msg=NULL;
+
+		if(apiFormatType==Json)
+			msg="Json -Test d'invio tramite libtwitc!";
+		else if(apiFormatType==Xml)
+			msg="Xml -Test d'invio tramite libtwitc!";
+		else
+			msg="Unknown -Test d'invio tramite libtwitc!";
+
+
+		status_t status = getStatus(updateStatus(twURLS, user, msg, apiFormatType));
+		onStatusReading(&status);
+
+		timeline_t timeline = readTimeLine(getRawTimeline(twURLS, home_timeline, user, apiFormatType));
+		onTimelineReading(&timeline);
+		uninitTimeline(&timeline);
+
+		direct_messages_t DMs=getDMs(getRawDM(twURLS, user, apiFormatType));
+		onDMsReading(&DMs);
+		uninitDirectMessages(&DMs);
+
+		direct_messages_t sentDMs=getDMs(getRawSentDM(twURLS, user, apiFormatType));
+		onDMsReading(&sentDMs);
+		uninitDirectMessages(&sentDMs);
+
+		string_t dm=sendDM(twURLS, user, user->screenName, msg, apiFormatType);
+
+		log(INFO,"DM: %s", dm);
+
+		timeline_t favorites = readTimeLine(getRawFavorites(twURLS, user, apiFormatType));
+		onTimelineReading(&favorites);
+		uninitTimeline(&favorites);
+
+
+		if (user)
+			uninitUser(user);
+
+	}
+
+	if (twURLS)
+		uninitURLS(twURLS);
+}
+
+
 byte_t
 main(int argc, char *argv[])
 {
@@ -163,66 +221,8 @@ main(int argc, char *argv[])
 	if (createDirectory(programDir))
 		createDirectory(configDir);
 
-	user_t *user = readUserFile(configFile);
-
-	//OAUTH TEST
-	twitterURLS_t *twURLS = initURLS(OAUTH_URL_DEFAULT, API_URL_DEFAULT, SEARCH_URL_DEFAULT, Json);
-
-	if (!user)
-		user = autentication(twURLS, configFile);
-
-	if (user)
-	{
-		string_t rawStatus = NULL;
-
-		rawStatus = updateStatus(twURLS, user, "Json - Test d'invio tramite libtwitc!", Json);
-		if (rawStatus)
-		{
-			log(INFO,"Message correctly tweetted!");
-			status_t status = getStatus(rawStatus);
-			onStatusReading(&status);
-		}
-		else
-			log(INFO,"Message not tweetted!");
-
-		timeline_t timeline = readTimeLine( getRawTimeline(twURLS, home_timeline, user, Json));
-		onTimelineReading(&timeline);
-
-		uninitTimeline(&timeline);
-
-		string_t rawDM=getRawDM(twURLS, user, Json);
-		direct_messages_t DMs=readDMs(rawDM);
-
-		onDMsReading(&DMs);
-
-		uninitDirectMessages(&DMs);
-
-
-		string_t rawSentDM=getRawSentDM(twURLS, user, Json);
-		direct_messages_t sentDMs=readDMs(rawSentDM);
-
-		onDMsReading(&sentDMs);
-
-		uninitDirectMessages(&sentDMs);
-
-		string_t dm=sendDM(twURLS, user, user->screenName,"Json - E' solo un test!", Json);
-
-		log(INFO,"DM: %s", dm);
-
-		timeline_t favorites = readTimeLine(getRawFavorites(twURLS, user, Json));
-
-		onTimelineReading(&favorites);
-
-		uninitTimeline(&favorites);
-
-
-		if (user)
-			uninitUser(user);
-
-	}
-
-	if (twURLS)
-		uninitURLS(twURLS);
+	test(Xml);
+	test(Json);
 
 	log(INFO,"stop");
 
