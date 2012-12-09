@@ -34,7 +34,7 @@
 extern string_t fileNameFromUrl(string_t);
 extern byte_t getFileCURL(string_t, string_t);
 extern string_t getPageCURL(string_t);
-extern string_t componeOAUTH_URL(const twitterURLS_t *, const ProtocolType_t, const string_t, ApiFormatType_t);
-extern string_t componeAPI_URL(const twitterURLS_t *, const ProtocolType_t, const string_t, ApiFormatType_t);
+extern string_t componeOAUTH_URL(const twitterURLS_t *, const ProtocolType_t, const string_t);
+extern string_t componeAPI_URL(const twitterURLS_t *, const ProtocolType_t, const string_t);
 
 #endif /* HTTP_H_ */

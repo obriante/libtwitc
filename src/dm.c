@@ -74,22 +74,22 @@ _getRawDM(string_t url, const twitterURLS_t * twURLS, const user_t * user)
 }
 
 string_t
-getRawDM(const twitterURLS_t * twURLS, const user_t * user,  const ApiFormatType_t apiFormatType)
+getRawDM(const twitterURLS_t * twURLS, const user_t * user)
 {
-  return _getRawDM(componeAPI_URL(twURLS, Https, DIRECTMESSAGES_URL, apiFormatType), twURLS, user);
+  return _getRawDM(componeAPI_URL(twURLS, Https, DIRECTMESSAGES_URL), twURLS, user);
 }
 
 
 string_t
-getRawSentDM(const twitterURLS_t * twURLS, const user_t * user,  const ApiFormatType_t apiFormatType)
+getRawSentDM(const twitterURLS_t * twURLS, const user_t * user)
 {
-  return _getRawDM(componeAPI_URL(twURLS, Https, DIRECTMESSAGESSENT_URL, apiFormatType), twURLS, user);
+  return _getRawDM(componeAPI_URL(twURLS, Https, DIRECTMESSAGESSENT_URL), twURLS, user);
 
 }
 
 
 string_t
-sendDM(const twitterURLS_t * twURLS, const user_t * user, const string_t to_rx, const string_t msg, const ApiFormatType_t apiFormatType)
+sendDM(const twitterURLS_t * twURLS, const user_t * user, const string_t to_rx, const string_t msg)
 {
 
 	string_t output = NULL;
@@ -105,7 +105,7 @@ sendDM(const twitterURLS_t * twURLS, const user_t * user, const string_t to_rx, 
 		/*
 		 * Send Tweet with oAuth functions
 		 */
-		url = componeAPI_URL(twURLS, Https, DIRECTMESSAGENEW_URL, apiFormatType);
+		url = componeAPI_URL(twURLS, Https, DIRECTMESSAGENEW_URL);
 
 		string_t dmMsg = oauth_url_escape(msg);
 		if (dmMsg)

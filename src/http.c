@@ -144,9 +144,7 @@ string_t getPageCURL(string_t url) {
 	return NULL ;
 }
 
-string_t compone_URL(const twitterURLS_t * twURLS,
-		const ProtocolType_t protocolType, const string_t urlPath,
-		ApiFormatType_t apiFormatType, int api) {
+string_t compone_URL(const twitterURLS_t * twURLS, const ProtocolType_t protocolType, const string_t urlPath, ApiFormatType_t apiFormatType, int api) {
 	string_t url = NULL;
 	string_t extension = NULL;
 	string_t protocol = NULL;
@@ -176,16 +174,13 @@ string_t compone_URL(const twitterURLS_t * twURLS,
 	return url;
 }
 
-string_t componeOAUTH_URL(const twitterURLS_t * twURLS,
-		const ProtocolType_t protocolType, const string_t urlPath,
-		ApiFormatType_t apiFormatType) {
-	return compone_URL(twURLS, protocolType, urlPath, apiFormatType, 0);
+string_t componeOAUTH_URL(const twitterURLS_t * twURLS, 	const ProtocolType_t protocolType, const string_t urlPath) {
+	return compone_URL(twURLS, protocolType, urlPath, None, 0);
 }
 
 string_t componeAPI_URL(const twitterURLS_t * twURLS,
-		const ProtocolType_t protocolType, const string_t urlPath,
-		ApiFormatType_t apiFormatType) {
-	return compone_URL(twURLS, protocolType, urlPath, apiFormatType, 1);
+		const ProtocolType_t protocolType, const string_t urlPath) {
+	return compone_URL(twURLS, protocolType, urlPath, twURLS->apiFormatType, 1);
 }
 
 #ifdef __cplusplus

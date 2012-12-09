@@ -45,8 +45,7 @@ extern status_t _getJsonStatus(json_object *obj);
 
 
 string_t
-getRawTimeline(const twitterURLS_t * twURLS, timelineType_t timelineType,
-		const user_t * user, const ApiFormatType_t apiFormatType)
+getRawTimeline(const twitterURLS_t * twURLS, timelineType_t timelineType, const user_t * user)
 {
 
 	string_t timeline = NULL;
@@ -54,31 +53,31 @@ getRawTimeline(const twitterURLS_t * twURLS, timelineType_t timelineType,
 
 	if (timelineType == home_timeline)
 	{
-		url = componeAPI_URL(twURLS, Http, HOME_TIMELINE_URL, apiFormatType);
+		url = componeAPI_URL(twURLS, Http, HOME_TIMELINE_URL);
 	}
 	else if (timelineType == featured)
 	{
-		url = componeAPI_URL(twURLS, Http, FEATURED_USERS_URL, apiFormatType);
+		url = componeAPI_URL(twURLS, Http, FEATURED_USERS_URL);
 	}
 	else if (timelineType == friends_timeline)
 	{
-		url = componeAPI_URL(twURLS, Http, FRIENDS_TIMELINE_URL, apiFormatType);
+		url = componeAPI_URL(twURLS, Http, FRIENDS_TIMELINE_URL);
 	}
 	else if (timelineType == mentions)
 	{
-		url = componeAPI_URL(twURLS, Http, MENTIONS_URL, apiFormatType);
+		url = componeAPI_URL(twURLS, Http, MENTIONS_URL);
 	}
 	else if (timelineType == user_timeline)
 	{
-		url = componeAPI_URL(twURLS, Http, USERTIMELINE_URL, apiFormatType);
+		url = componeAPI_URL(twURLS, Http, USERTIMELINE_URL);
 	}
 	else if (timelineType == public_timeline)
 	{
-		url = componeAPI_URL(twURLS, Http, PUBLIC_TIMELINE_URL, apiFormatType);
+		url = componeAPI_URL(twURLS, Http, PUBLIC_TIMELINE_URL);
 	}
 	else
 	{
-		url = componeAPI_URL(twURLS, Http, PUBLIC_TIMELINE_URL, apiFormatType);
+		url = componeAPI_URL(twURLS, Http, PUBLIC_TIMELINE_URL);
 	}
 
 	if (url)

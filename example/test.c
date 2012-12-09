@@ -159,26 +159,26 @@ void test(const ApiFormatType_t apiFormatType){
 			msg="Unknown -Test d'invio tramite libtwitc!";
 
 
-		status_t status = getStatus(updateStatus(twURLS, user, msg, apiFormatType));
+		status_t status = getStatus(updateStatus(twURLS, user, msg));
 		onStatusReading(&status);
 
-		timeline_t timeline = readTimeLine(getRawTimeline(twURLS, home_timeline, user, apiFormatType));
+		timeline_t timeline = readTimeLine(getRawTimeline(twURLS, home_timeline, user));
 		onTimelineReading(&timeline);
 		uninitTimeline(&timeline);
 
-		direct_messages_t DMs=getDMs(getRawDM(twURLS, user, apiFormatType));
+		direct_messages_t DMs=getDMs(getRawDM(twURLS, user));
 		onDMsReading(&DMs);
 		uninitDirectMessages(&DMs);
 
-		direct_messages_t sentDMs=getDMs(getRawSentDM(twURLS, user, apiFormatType));
+		direct_messages_t sentDMs=getDMs(getRawSentDM(twURLS, user));
 		onDMsReading(&sentDMs);
 		uninitDirectMessages(&sentDMs);
 
-		string_t dm=sendDM(twURLS, user, user->screenName, msg, apiFormatType);
+		string_t dm=sendDM(twURLS, user, user->screenName, msg);
 
 		log(INFO,"DM: %s", dm);
 
-		timeline_t favorites = readTimeLine(getRawFavorites(twURLS, user, apiFormatType));
+		timeline_t favorites = readTimeLine(getRawFavorites(twURLS, user));
 		onTimelineReading(&favorites);
 		uninitTimeline(&favorites);
 

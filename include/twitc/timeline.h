@@ -46,7 +46,7 @@ typedef struct
 
 
 extern string_t
-getRawTimeline(const twitterURLS_t *, timelineType_t, const user_t *, const ApiFormatType_t apiFormatType);
+getRawTimeline(const twitterURLS_t *, timelineType_t, const user_t *);
 
 extern timeline_t
 readTimeLine(const string_t);

@@ -88,13 +88,13 @@ typedef struct{
 }direct_messages_t;
 
 extern string_t
-getRawDM(const twitterURLS_t *, const user_t *, const ApiFormatType_t);
+getRawDM(const twitterURLS_t *, const user_t *);
 
 extern string_t
-getRawSentDM(const twitterURLS_t *, const user_t *,  const ApiFormatType_t);
+getRawSentDM(const twitterURLS_t *, const user_t *);
 
 extern string_t
-sendDM(const twitterURLS_t *, const user_t *, const string_t, const string_t, const ApiFormatType_t);
+sendDM(const twitterURLS_t *, const user_t *, const string_t, const string_t);
 
 extern direct_messages_t
 getDMs(const string_t);

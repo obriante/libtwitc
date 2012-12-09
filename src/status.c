@@ -489,7 +489,7 @@ status_t getStatus(const string_t rawStatus){
  *
  */
 string_t
-updateStatus(const twitterURLS_t * twURLS, const user_t * user, const string_t msg, const ApiFormatType_t apiFormatType)
+updateStatus(const twitterURLS_t * twURLS, const user_t * user, const string_t msg)
 {
 
 	string_t output = NULL;
@@ -503,7 +503,7 @@ updateStatus(const twitterURLS_t * twURLS, const user_t * user, const string_t m
 		/*
 		 * Send Tweet with oAuth functions
 		 */
-		url = componeAPI_URL(twURLS, Http, STATUSUPDATE_URL, apiFormatType);
+		url = componeAPI_URL(twURLS, Http, STATUSUPDATE_URL);
 
 		string_t tweet = oauth_url_escape(msg);
 		if (tweet)
