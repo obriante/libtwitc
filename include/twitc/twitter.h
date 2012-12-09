@@ -49,6 +49,7 @@
 #define API_URL_DEFAULT				"api.twitter.com/1/"
 #define SEARCH_URL_DEFAULT			"search.twitter.com/search"
 
+#define	DEFAULT_API_FORMAT			Xml
 
 /* OAUTH URL */
 #define REQTOKEN_URL				"request_token"
