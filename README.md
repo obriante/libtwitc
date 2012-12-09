@@ -11,7 +11,7 @@
 * libcurl
 * libxml-2.0
 * oauth
-* jsonc
+* json
 
 ## How to Generate Makefile:
 
