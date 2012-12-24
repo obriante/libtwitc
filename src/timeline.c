@@ -196,13 +196,16 @@ timeline_t readJsonTimeLine(const string_t rawTimeline)
 timeline_t readTimeLine(const string_t rawTimeline)
 {
 
-	json_object *obj = json_tokener_parse(rawTimeline);
-
-	if(obj)
-		return readJsonTimeLine(rawTimeline);
+	xmlDocPtr doc = xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL, XML_PARSE_COMPACT);
 
 
-	return 	readXmlTimeLine(rawTimeline);
+	if(doc){
+		xmlFreeDoc(doc);
+		return 	readXmlTimeLine(rawTimeline);
+	}
+
+
+	return readJsonTimeLine(rawTimeline);
 }
 
 void uninitTimeline(timeline_t *timeline)

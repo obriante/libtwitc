@@ -536,12 +536,14 @@ direct_messages_t
 getDMs(const string_t rawDM)
 {
 
-	json_object *obj = json_tokener_parse(rawDM);
+	xmlDocPtr doc = xmlReadMemory(rawDM, strlen(rawDM), "", NULL, XML_PARSE_COMPACT);
 
-	if(obj)
-		return getJsonDMs(rawDM);
+	if(doc){
+		xmlFreeDoc(doc);
+		return getXmlDMs(rawDM);
+	}
 
-	return getXmlDMs(rawDM);
+	return getJsonDMs(rawDM);
 }
 
 
