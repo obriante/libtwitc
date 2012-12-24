@@ -3,6 +3,10 @@
 ### Patryk Rzucidlo ptkdev@gmail.com
 #### Contributors: Alfredo Liguoro  <freddy@haxaddicts.net>
 
+## How to download this repository:
+
+	$ git clone <project url>  --recursive
+
 ## Prerequisites:
 
 * gcc, g++, or cc
