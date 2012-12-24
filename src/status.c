@@ -475,13 +475,16 @@ status_t getJsonStatus(const string_t rawStatus)
 status_t getStatus(const string_t rawStatus){
 
 
-	json_object *obj = json_tokener_parse(rawStatus);
-
-	if(obj)
-		return getJsonStatus(rawStatus);
+xmlDocPtr doc = xmlReadMemory(rawStatus, strlen(rawStatus), "", NULL, XML_PARSE_COMPACT);
 
 
+	if(doc){
+	xmlFreeDoc(doc);
 	return getXmlStatus(rawStatus);
+	}
+
+
+return getJsonStatus(rawStatus);
 }
 
 /*
