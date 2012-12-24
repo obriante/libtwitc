@@ -51,6 +51,12 @@ getRawTimeline(const twitterURLS_t *, timelineType_t, const user_t *);
 extern timeline_t
 readTimeLine(const string_t);
 
+extern timeline_t
+readXmlTimeLine(const string_t);
+
+extern timeline_t
+readJsonTimeLine(const string_t);
+
 extern void uninitTimeline(timeline_t *);
 
 

@@ -99,6 +99,12 @@ sendDM(const twitterURLS_t *, const user_t *, const string_t, const string_t);
 extern direct_messages_t
 getDMs(const string_t);
 
+extern direct_messages_t
+getXmlDMs(const string_t);
+
+extern direct_messages_t
+getJsonDMs(const string_t);
+
 
 extern void
 uninitDMUser(dm_user_t);
