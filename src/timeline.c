@@ -18,8 +18,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <logc/logc.h>
-
 #include <twitc/http.h>
 #include <twitc/timeline.h>
 #include <twitc/user.h>
@@ -95,10 +93,7 @@ getRawTimeline(const twitterURLS_t * twURLS, timelineType_t timelineType, const 
 
 		if (req_url)
 		{
-			debug ("req_url :\t%s", req_url);
-
 			timeline = oauth_http_get(req_url, NULL );
-
 		}
 
 		if (req_url)
@@ -109,9 +104,6 @@ getRawTimeline(const twitterURLS_t * twURLS, timelineType_t timelineType, const 
 	if (url)
 		free(url);
 	url = NULL;
-
-	if (!timeline)
-		log(WARNING,"Returned value: (NULL)");
 
 	return timeline;
 }
@@ -136,8 +128,6 @@ timeline_t readXmlTimeLine(const string_t rawTimeline)
 			if (!xmlStrcmp(cur->name, (const xmlChar *) "statuses"))
 			{
 
-				debug("cur->name: %s", cur->name);
-
 				cur = cur->xmlChildrenNode;
 
 				int i=0;
@@ -145,11 +135,7 @@ timeline_t readXmlTimeLine(const string_t rawTimeline)
 				{
 					if ((!xmlStrcmp(cur->name, (const xmlChar *)"status")))
 					{
-						debug("cur->name: %s", cur->name);
-
 						timeline.statuses[i]=_getXmlStatus(doc, cur);
-
-						debug(" %i) [%s] @%s: %s", i, timeline.statuses[i].created_at, timeline.statuses[i].user.screen_name, timeline.statuses[i].text);
 						i++;
 					}
 

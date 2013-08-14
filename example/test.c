@@ -17,7 +17,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <logc/logc.h>
+#include "logc/include/logc/logc.h"
 
 #include <twitc/twitc.h>
 
@@ -39,9 +39,11 @@
 
 #define TWC_UPDATES_URL "https://raw.github.com/KernelMonkey/libtwitc/master/VERSION"
 
-static string_t programDir;
-static string_t configDir;
-static string_t configFile;
+string_t programDir;
+string_t configDir;
+string_t configFile;
+
+string_t debug=NULL;
 
 void
 initProgramPath()
@@ -50,31 +52,91 @@ initProgramPath()
 	passwd_t *p = getpwuid(uid);
 
 	asprintf(&programDir, "%s/%s", p->pw_dir, PROG_PATH);
-	debug ("programDir: \t%s", programDir);
-
 	asprintf(&configDir, "%s/%s", programDir, CONFIG_DIR);
-	debug ("configDir:\t%s", configDir);
-
 	asprintf(&configFile, "%s/%s", configDir, CONFIG_FILE);
-	debug ("configFile:\t%s", configFile);
+
+	debug=NULL;
+	asprintf(&debug, "%s%s", "programDir: \t", programDir);
+	log(DEBUG,debug);
+	free(debug);
+
+	debug=NULL;
+	asprintf(&debug, "%s%s", "configDir:\t", configDir);
+	log(DEBUG,debug);
+	free(debug);
+
+	debug=NULL;
+	asprintf(&debug, "%s%s", "configFile:\t", configFile);
+	log(DEBUG,debug);
+	free(debug);
+
 
 }
 
 user_t *
 autentication(twitterURLS_t * twURLS, string_t fileName)
 {
+
+	debug=NULL;
+	asprintf(&debug, "%s%s", "twURLS->oauth_URL:\t", 	twURLS->oauth_URL);
+	log(DEBUG,debug);
+	free(debug);
+
+	debug=NULL;
+	asprintf(&debug, "%s%s", "twURLS->api_URL:\t", twURLS->api_URL);
+	log(DEBUG,debug);
+	free(debug);
+
+	debug=NULL;
+	asprintf(&debug, "%s%s", "twURLS->serch_URL:\t", twURLS->serch_URL);
+	log(DEBUG,debug);
+	free(debug);
+
+
+	if(twURLS->apiFormatType==Xml)
+	{
+		debug=NULL;
+		asprintf(&debug, "%s%s", "configDir:\t", configDir);
+		log(DEBUG,debug);
+		free(debug);
+
+	}
+	else if(twURLS->apiFormatType==Json)
+	{
+		debug=NULL;
+		asprintf(&debug, "%s%s", "configDir:\t", configDir);
+		log(DEBUG,debug);
+		free(debug);
+
+	}
+	else{
+		debug=NULL;
+		asprintf(&debug, "%s%s", "configDir:\t", configDir);
+		log(DEBUG,debug);
+		free(debug);
+	}
+
 	string_t tmpToken = tokenTempBrowser(twURLS, TWITTER_KEY, TWITTER_KEY_SECRET);
 
 	if (tmpToken)
 	{
-		debug ("tmpToken:\t%s", tmpToken);
+
+		debug=NULL;
+		asprintf(&debug, "%s%s", "tmpToken:\t", tmpToken);
+		log(DEBUG,debug);
+		free(debug);
+
 
 		int c;
 		char pin[10];
 		fprintf(stdout, "inserisci il pin: ");
 		fgets(pin, 10, stdin);
 		fprintf(stdout, "\n\n");
-		debug ("pin:\t%s", pin);
+
+		debug=NULL;
+		asprintf(&debug, "%s%s", "pin:\t", pin);
+		log(DEBUG,debug);
+		free(debug);
 
 		pin[strlen(pin) - 1] = '\0';
 
@@ -84,6 +146,37 @@ autentication(twitterURLS_t * twURLS, string_t fileName)
 
 		if (user)
 		{
+
+			debug=NULL;
+			asprintf(&debug, "%s%s", "user->consumerKey:\t", user->consumerKey);
+			log(DEBUG,debug);
+			free(debug);
+
+			debug=NULL;
+			asprintf(&debug, "%s%s", "user->consumerSecretKey:\t", user->consumerSecretKey);
+			log(DEBUG,debug);
+			free(debug);
+
+			debug=NULL;
+			asprintf(&debug, "%s%s", "user->id:\t", user->id);
+			log(DEBUG,debug);
+			free(debug);
+
+			debug=NULL;
+			asprintf(&debug, "%s%s", "user->screenName:\t", user->screenName);
+			log(DEBUG,debug);
+			free(debug);
+
+			debug=NULL;
+			asprintf(&debug, "%s%s", "user->secretToken:\t", user->secretToken);
+			log(DEBUG,debug);
+			free(debug);
+
+			debug=NULL;
+			asprintf(&debug, "%s%s", "user->token:\t", user->token);
+			log(DEBUG,debug);
+			free(debug);
+
 			writeUserFile(user, configFile);
 
 			return user;
@@ -179,7 +272,10 @@ void test(const ApiFormatType_t apiFormatType){
 
 		string_t dm=sendDM(twURLS, user, user->screenName, msg);
 
-		log(INFO,"DM: %s", dm);
+		debug=NULL;
+		asprintf(&debug, "%s%s", "Direct Message:\t", dm);
+		log(DEBUG,debug);
+		free(debug);
 
 		timeline_t favorites = readTimeLine(getRawFavorites(twURLS, user));
 		onTimelineReading(&favorites);
@@ -201,7 +297,7 @@ main(int argc, char *argv[])
 {
 
 	initLog(FILE_VIDEO_LOG, FILE_VIDEO_LOG);
-	openVideoLog(stdout);
+	openVideoLog(stderr);
 	checkFileSize(LOG_FILE, 0);
 	openLogFile(LOG_FILE);
 
@@ -215,7 +311,7 @@ main(int argc, char *argv[])
 
 	if (version)
 	{
-		printf("Version:\t\t%s", version);
+		fprintf(stdout, "Version:\t\t%s", version);
 
 		free(version);
 		version = NULL;

@@ -18,7 +18,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <logc/logc.h>
 #include <twitc/twitter.h>
 
 #include <stdio.h>
@@ -39,13 +38,9 @@ twitterURLS_t *initURLS(const string_t oauth_URL, const string_t api_URL, const 
 		twitterURLS_t *twURLS=(twitterURLS_t *)malloc(sizeof(twitterURLS_t));
 
 		int error=asprintf(&twURLS->api_URL,"%s",api_URL);
-		debug("twURLS->api_URL:\t\t\t%s", twURLS->api_URL);
 
 		error=asprintf(&twURLS->oauth_URL,"%s",oauth_URL);
-		debug("twURLS->oauth_URL:\t\t\t%s", twURLS->oauth_URL);
-
 		error=asprintf(&twURLS->serch_URL,"%s",serch_URL);
-		debug("twURLS->serch_URL:\t\t\t%s", twURLS->serch_URL);
 
 		twURLS->apiFormatType=apiFormatType;
 
@@ -76,7 +71,6 @@ void uninitURLS(twitterURLS_t *twURLS)
 		free(twURLS);
 	}
 
-	log(WARNING,"twitterURLS_t uninitialized");
 	twURLS=NULL;
 
 }

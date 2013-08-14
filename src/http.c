@@ -17,8 +17,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <logc/logc.h>
-
 #include <twitc/stdredef.h>
 #include <twitc/http.h>
 
@@ -61,7 +59,6 @@ byte_t getFileCURL(string_t url, string_t file) {
 #ifdef DEBUG
 			curl_easy_setopt(curl, CURLOPT_VERBOSE, true);
 #else
-			log(INFO,"Verbose output disabled into the download process");
 			curl_easy_setopt(curl, CURLOPT_VERBOSE, false);
 #endif
 			// Open the file to write the copied file to
@@ -94,7 +91,6 @@ void init_data_buffer(dataBuffer_t * s) {
 	s->len = 0;
 	s->ptr = malloc(s->len + 1);
 	if (s->ptr == NULL ) {
-		log(ERROR, "malloc() failed");
 		exit(EXIT_FAILURE);
 	}
 	s->ptr[0] = '\0';
@@ -127,7 +123,6 @@ string_t getPageCURL(string_t url) {
 #ifdef DEBUG
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, true);
 #else
-		log(INFO,"Verbose output disabled into the download process");
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, false);
 #endif
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
@@ -140,7 +135,6 @@ string_t getPageCURL(string_t url) {
 		return s.ptr;
 	}
 
-	log(WARNING, "Returned value: (NULL)");
 	return NULL ;
 }
 
@@ -167,9 +161,6 @@ string_t compone_URL(const twitterURLS_t * twURLS, const ProtocolType_t protocol
 	else
 		asprintf(&url, "%s%s%s%s", protocol, twURLS->api_URL, urlPath,
 				extension);
-
-	if (url)
-		debug("url: %s", url);
 
 	return url;
 }

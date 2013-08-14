@@ -19,9 +19,6 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
-#include <logc/logc.h>
-
 #include <twitc/favorites.h>
 #include <twitc/http.h>
 
@@ -53,10 +50,7 @@ string_t getRawFavorites(const twitterURLS_t *twURLS, const user_t *user)
 
        if (req_url)
          {
-           debug ("req_url :\t%s", req_url);
-
            output = oauth_http_get(req_url, NULL );
-
          }
 
        if (req_url)
@@ -67,11 +61,6 @@ string_t getRawFavorites(const twitterURLS_t *twURLS, const user_t *user)
    if (url)
      free(url);
    url = NULL;
-
-   if (!output)
-     log(WARNING,"Returned value: (NULL)");
-   else
-     debug("output: %s", output);
 
   return output;
 }

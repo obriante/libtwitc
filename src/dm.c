@@ -19,9 +19,6 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
-#include <logc/logc.h>
-
 #include <twitc/http.h>
 #include <twitc/dm.h>
 
@@ -55,10 +52,7 @@ _getRawDM(string_t url, const twitterURLS_t * twURLS, const user_t * user)
 
 		if (req_url)
 		{
-			debug ("req_url :\t%s", req_url);
-
 			output = oauth_http_get(req_url, NULL );
-
 		}
 
 		if (req_url)
@@ -66,9 +60,6 @@ _getRawDM(string_t url, const twitterURLS_t * twURLS, const user_t * user)
 		req_url = NULL;
 
 	}
-
-	if(!output)
-		log(WARNING,"Returned value: (NULL)");
 
 	return output;
 }
@@ -96,10 +87,6 @@ sendDM(const twitterURLS_t * twURLS, const user_t * user, const string_t to_rx, 
 
 	if (twURLS && user && msg && to_rx)
 	{
-		debug ("Message: %s", msg);
-		debug ("screenName: %s", user->screenName);
-		debug ("to_rx: %s", to_rx);
-
 		string_t url = NULL;
 
 		/*
@@ -110,37 +97,22 @@ sendDM(const twitterURLS_t * twURLS, const user_t * user, const string_t to_rx, 
 		string_t dmMsg = oauth_url_escape(msg);
 		if (dmMsg)
 		{
-			debug ("url:\t%s", url);
-
 			string_t twitterDMURL = NULL;
 			asprintf(&twitterDMURL, "%s%s%s%s%s%s%s%s", url, URL_SEP_QUES, "screen_name",
 					"=", to_rx, URL_SEP_AMP, "text=", dmMsg);
 
 			if (twitterDMURL)
 			{
-				debug ("url:\t%s", twitterDMURL);
 
 				if (user->id && user->screenName && user->consumerKey
 						&& user->consumerSecretKey && user->token
 						&& user->secretToken)
 				{
 
-					/*DEBUG*/
-					debug ("user->screenName: %s", user->screenName);
-					debug ("user->id: %s", user->id);
-					debug ("user->consumerKey: %s", user->consumerKey);
-					debug ("user->consumerSecretKey: %s", user->consumerSecretKey);
-					debug ("user->token: %s", user->token);
-					debug ("user->secretToken: %s", user->secretToken);
-
 					string_t postarg = NULL;
 					string_t sendmsg = oauth_sign_url2(twitterDMURL,
 							&postarg, OA_HMAC, NULL, user->consumerKey,
 							user->consumerSecretKey, user->token, user->secretToken);
-
-					if (postarg)
-						debug ("postarg: %s", postarg);
-
 
 					if (sendmsg)
 						output = oauth_http_post(sendmsg, postarg);
@@ -169,11 +141,6 @@ sendDM(const twitterURLS_t * twURLS, const user_t * user, const string_t to_rx, 
 
 
 	}
-
-	if (!output)
-		log(WARNING,"Returned value: (NULL)");
-	else
-		debug ("output: %s", output);
 
 	return output;
 }
@@ -390,8 +357,6 @@ getXmlDMs(const string_t rawDM)
 				if (!xmlStrcmp(cur->name, (const xmlChar *) "direct-messages"))
 				{
 
-					debug ("cur->name: %s", cur->name);
-
 					cur = cur->xmlChildrenNode;
 
 					int i = 0;
@@ -399,11 +364,7 @@ getXmlDMs(const string_t rawDM)
 					{
 						if ((!xmlStrcmp(cur->name, (const xmlChar *) "direct_message")))
 						{
-							debug ("cur->name: %s", cur->name);
-
 							direct_messages.directMessage[i] = _getXmlDM(doc, cur);
-
-							debug (" %i) [%s] @%s: %s", i,direct_messages.directMessage[i].created_at, direct_messages.directMessage[i].sender_screen_name, direct_messages.directMessage[i].text);
 							i++;
 						}
 
@@ -513,12 +474,9 @@ getJsonDMs(const string_t rawDM){
 				if(json_object_object_get(obj,"errors"))
 					return direct_messages;
 
-				debug("json_object_array_length %i", json_object_array_length(obj) );
-
 				if( json_object_array_get_idx(obj,i)){
 					direct_messages.directMessage[i]=_getJsonDM(json_object_array_get_idx(obj,i));
 
-					debug (" %i) [%s] @%s: %s", i,direct_messages.directMessage[i].created_at, direct_messages.directMessage[i].sender_screen_name, direct_messages.directMessage[i].text);
 				}
 
 			}

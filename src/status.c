@@ -19,9 +19,6 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
-#include <logc/logc.h>
-
 #include <twitc/http.h>
 #include <twitc/status.h>
 #include <twitc/user.h>
@@ -347,7 +344,9 @@ _getXmlStatus(const xmlDocPtr doc, xmlNodePtr cur)
 				asprintf(&status.contributors, "%s",
 						xmlNodeListGetString(doc, cur->xmlChildrenNode, 1));
 
+			if (cur)
 			cur = cur->next;
+			if (cur)
 			cur = cur->next;
 		}
 
@@ -460,7 +459,6 @@ status_t getJsonStatus(const string_t rawStatus)
 	status_t status;
 	memset(&status, 0x00, sizeof(status_t));
 
-	debug("rawStatus: %s", rawStatus);
 	json_object *obj = json_tokener_parse(rawStatus);
 	status=_getJsonStatus(obj);
 
@@ -499,8 +497,6 @@ updateStatus(const twitterURLS_t * twURLS, const user_t * user, const string_t m
 
 	if (twURLS && user && msg)
 	{
-		debug ("Message: %s", msg);debug ("screenName: %s", user->screenName);
-
 		string_t url = NULL;
 
 		/*
@@ -516,28 +512,15 @@ updateStatus(const twitterURLS_t * twURLS, const user_t * user, const string_t m
 
 			if (twitterStatusURL)
 			{
-				debug ("twitterStatusURL:\t%s", twitterStatusURL);
-
 				if (user->id && user->screenName && user->consumerKey
 						&& user->consumerSecretKey && user->token
 						&& user->secretToken)
 				{
 
-					/*DEBUG*/
-					debug ("user->screenName:\t%s", user->screenName);
-					debug ("user->id", user->id);
-					debug ("user->consumerKey", user->consumerKey);
-					debug ("user->consumerSecretKey", user->consumerSecretKey);
-					debug ("user->token", user->token);
-					debug ("user->secretToken", user->secretToken);
-
 					string_t postarg = NULL;
 					string_t sendTweet = oauth_sign_url2(twitterStatusURL,
 							&postarg, OA_HMAC, NULL, user->consumerKey,
 							user->consumerSecretKey, user->token, user->secretToken);
-
-					if (postarg)
-						debug ("postarg: %s", postarg);
 
 					if (sendTweet)
 						output = oauth_http_post(sendTweet, postarg);
@@ -567,10 +550,6 @@ updateStatus(const twitterURLS_t * twURLS, const user_t * user, const string_t m
 		url = NULL;
 
 	}
-	if (!output)
-		log(WARNING,"Returned value: (NULL)");
-	else
-		debug ("output: %s", output);
 
 	return output;
 }
@@ -689,8 +668,6 @@ uninitTwitterUser(twitterUser_t twUser)
 	twUser.statuses_count = NULL;
 	twUser.listed_count = NULL;
 
-	debug("twitterUser_t correctly uninitialized");
-
 }
 
 void
@@ -744,8 +721,6 @@ uninitStatus(status_t status)
 	status.coordinates = NULL;
 	status.place = NULL;
 	status.contributors = NULL;
-
-	debug("status_t correctly uninitialized");
 }
 
 

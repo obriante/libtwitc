@@ -36,10 +36,8 @@ DX_INIT_DOXYGEN([$PACKAGE_NAME],[twitc.doxyfile],[doc])
 PKG_CHECK_MODULES(EXTERN_DEP, [libcurl libxml-2.0 oauth json])
 
 AC_CONFIG_SUBDIRS( liblogc )
-	liblogc_CFLAGS="-I\$(top_srcdir)/liblogc/include"
-	liblogc_LIBS="\$(top_builddir)/liblogc/src/liblogc.a"
+liblogc_CFLAGS="-I\$(top_srcdir)/example/logc/include"
 AC_SUBST(liblogc_CFLAGS)
-AC_SUBST(liblogc_LIBS)
 
 AC_CONFIG_SUBDIRS( libtwitc )
 	libtwitc_CFLAGS="-I\$(top_srcdir)/include"
@@ -62,7 +60,6 @@ AC_PROG_RANLIB
 
 AC_CONFIG_FILES(
 Makefile
-liblogc/Makefile
 src/Makefile
 example/Makefile
 )

@@ -17,8 +17,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <logc/logc.h>
-
 #include <twitc/stdredef.h>
 #include <twitc/functions.h>
 
@@ -70,7 +68,6 @@ readRawTextFile(const string_t fileName)
 
     }
 
-  log(WARNING,"Returned value: (NULL)");
   return NULL ;
 }
 

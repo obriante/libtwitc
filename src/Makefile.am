@@ -12,22 +12,19 @@ dm.c \
 favorites.c
 
 
-libtwitc_a_LIBADD = \
-@liblogc_LIBS@
+libtwitc_a_LIBADD =
 
 if DEBUG
 
 AM_CFLAGS = -g3 -O0 \
 	@EXTERN_DEP_CFLAGS@\
-	@libtwitc_CFLAGS@ \
-	@liblogc_CFLAGS@
+	@libtwitc_CFLAGS@
 
 else
 
 AM_CFLAGS = -O2 \
 	@EXTERN_DEP_CFLAGS@\
-	@libtwitc_CFLAGS@ \
-	@liblogc_CFLAGS@
+	@libtwitc_CFLAGS@
 
 endif
 

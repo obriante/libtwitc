@@ -1,3 +1,3 @@
-[submodule "liblogc"]
-	path = liblogc
+[submodule "example/logc"]
+	path = example/logc
 	url = https://github.com/KernelMonkey/liblogc.git

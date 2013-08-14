@@ -24,6 +24,8 @@
 #ifndef OAUTH_H_
 #define OAUTH_H_
 
+#include <string.h>
+
 #include <twitc/stdredef.h>
 #include <twitc/twitter.h>
 #include <twitc/user.h>
