@@ -32,16 +32,16 @@
 #define CONFIG_FILE "Config"
 #define PREFERENCE_FILE "Preference"
 
-#define LOG_FILE	"/tmp/test.log"
+#define LOG_FILE	"/tmp/libtwitc.test.log"
 
 #define TWITTER_KEY "0xdBqXjFX4LBTLyoc5Dg"
 #define TWITTER_KEY_SECRET "VIr57NPcgxxpJ2esI7brKGhth06EslbH0UDD3ImFB8"
 
 #define TWC_UPDATES_URL "https://raw.github.com/KernelMonkey/libtwitc/master/VERSION"
 
-string_t programDir;
-string_t configDir;
-string_t configFile;
+static string_t programDir;
+static string_t configDir;
+static string_t configFile;
 
 void
 initProgramPath()
@@ -50,10 +50,13 @@ initProgramPath()
 	passwd_t *p = getpwuid(uid);
 
 	asprintf(&programDir, "%s/%s", p->pw_dir, PROG_PATH);
-	asprintf(&configDir, "%s/%s", programDir, CONFIG_DIR);
-	asprintf(&configFile, "%s/%s", configDir, CONFIG_FILE);
+	debug ("programDir: \t%s", programDir);
 
-	debug ("programDir:\t%s", programDir);debug ("configDir:\t%s", configDir);debug ("configFile:\t%s", configFile);
+	asprintf(&configDir, "%s/%s", programDir, CONFIG_DIR);
+	debug ("configDir:\t%s", configDir);
+
+	asprintf(&configFile, "%s/%s", configDir, CONFIG_FILE);
+	debug ("configFile:\t%s", configFile);
 
 }
 
