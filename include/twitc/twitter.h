@@ -46,7 +46,7 @@
 /* default url*/
 
 #define OAUTH_URL_DEFAULT			"api.twitter.com/oauth/"
-#define API_URL_DEFAULT				"api.twitter.com/1/"
+#define API_URL_DEFAULT				"api.twitter.com/1.1/"
 #define SEARCH_URL_DEFAULT			"search.twitter.com/search"
 
 #define	DEFAULT_API_FORMAT			Xml

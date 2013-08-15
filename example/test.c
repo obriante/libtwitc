@@ -320,7 +320,10 @@ main(int argc, char *argv[])
 	if (createDirectory(programDir))
 		createDirectory(configDir);
 
-	test(Xml);
+	//test(Xml);
+
+	info("XML version is deprecated");
+
 	test(Json);
 
 	log(INFO,"stop");
