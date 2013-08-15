@@ -296,7 +296,7 @@ byte_t
 main(int argc, char *argv[])
 {
 
-	initLog(FILE_VIDEO_LOG, FILE_VIDEO_LOG);
+	initLogger(ALL_LEVEL, ALL_LEVEL);
 	openVideoLog(stderr);
 	checkFileSize(LOG_FILE, 0);
 	openLogFile(LOG_FILE);
