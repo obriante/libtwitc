@@ -10,8 +10,7 @@ libtwitc_a_SOURCES = \
 		 twitter.c \
 		 dm.c \
 		 favorites.c \
-		 twitcver.c \
-		 twitcwin.c
+		 twitcver.c
 
 
 libtwitc_a_LIBADD =
