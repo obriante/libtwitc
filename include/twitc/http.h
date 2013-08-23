@@ -1,6 +1,5 @@
 /*
- * libtwitc - C Support Library for Twitter
- * Copyright (C) 2012 Orazio Briante orazio.briante@hotmail.it
+ * Copyright (C) 2012 - 2013, Orazio Briante <orazio.briante@hotmail.it>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,18 +22,18 @@
 #include <twitc/twitter.h>
 
 /* URL separators */
-#define URL_SEP_AMP						"&"
-#define URL_SEP_QUES					"?"
-#define EXTENSIONFORMAT_XML				".xml"
-#define EXTENSIONFORMAT_JSON			".json"
 
-#define PROTOCOL_HTTP					"http://"
-#define PROTOCOL_HTTPS					"http://" // https don't work on debian based
+#define URL_SEP_AMP		 "&"
+#define URL_SEP_QUES		 "?"
+#define EXTENSIONFORMAT_JSON	 ".json"
 
-extern string_t fileNameFromUrl(string_t);
-extern byte_t getFileCURL(string_t, string_t);
-extern string_t getPageCURL(string_t);
-extern string_t componeOAUTH_URL(const twitterURLS_t *, const ProtocolType_t, const string_t);
-extern string_t componeAPI_URL(const twitterURLS_t *, const ProtocolType_t, const string_t);
+#define PROTOCOL_HTTP		 "http://"
+#define PROTOCOL_HTTPS		 "http://" // https don't work on debian based
+
+extern string_t fileNameFromUrl  (string_t);
+extern byte_t   getFileCURL      (string_t, string_t);
+extern string_t getPageCURL      (string_t);
+extern string_t componeOAUTH_URL (const twitterURLS_t *, const ProtocolType_t, const string_t);
+extern string_t componeAPI_URL   (const twitterURLS_t *, const ProtocolType_t, const string_t);
 
 #endif /* HTTP_H_ */

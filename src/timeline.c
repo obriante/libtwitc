@@ -34,13 +34,7 @@
 extern "C"{
 #endif
 
-
-extern status_t _getXmlStatus(const xmlDocPtr, xmlNodePtr);
-
-
 extern status_t _getJsonStatus(json_object *obj);
-
-
 
 string_t
 getRawTimeline(const twitterURLS_t * twURLS, timelineType_t timelineType, const user_t * user)
@@ -108,52 +102,6 @@ getRawTimeline(const twitterURLS_t * twURLS, timelineType_t timelineType, const 
 	return timeline;
 }
 
-
-timeline_t readXmlTimeLine(const string_t rawTimeline)
-{
-
-	timeline_t timeline;
-	memset(&timeline, 0x00, sizeof(timeline));
-
-
-	xmlDocPtr doc = xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL, XML_PARSE_COMPACT);
-
-	if (doc)
-	{
-		xmlNodePtr cur = xmlDocGetRootElement(doc);
-
-		while (cur)
-		{
-
-			if (!xmlStrcmp(cur->name, (const xmlChar *) "statuses"))
-			{
-
-				cur = cur->xmlChildrenNode;
-
-				int i=0;
-				while (cur)
-				{
-					if ((!xmlStrcmp(cur->name, (const xmlChar *)"status")))
-					{
-						timeline.statuses[i]=_getXmlStatus(doc, cur);
-						i++;
-					}
-
-					cur = cur->next;
-
-				}
-			}else
-				cur = cur->next;
-		}
-	}
-
-	if(doc)
-		xmlFreeDoc(doc);
-
-
-	return timeline;
-}
-
 timeline_t readJsonTimeLine(const string_t rawTimeline)
 {
 
@@ -178,19 +126,8 @@ timeline_t readJsonTimeLine(const string_t rawTimeline)
 	return timeline;
 }
 
-
 timeline_t readTimeLine(const string_t rawTimeline)
 {
-
-	xmlDocPtr doc = xmlReadMemory(rawTimeline, strlen(rawTimeline), "", NULL, XML_PARSE_COMPACT);
-
-
-	if(doc){
-		xmlFreeDoc(doc);
-		return 	readXmlTimeLine(rawTimeline);
-	}
-
-
 	return readJsonTimeLine(rawTimeline);
 }
 

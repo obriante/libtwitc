@@ -28,28 +28,29 @@
 
 /* Miscellaneous data used to build twitter URLs*/
 #define STATUSSTRING				"status "
-#define TEXTSTRING					"text "
-#define QUERYSTRING					"query "
+#define TEXTSTRING				"text "
+#define QUERYSTRING				"query "
 #define SEARCHQUERYSTRING			"q "
-#define SCREENNAME					"screen_name "
-#define USERID						"user_id "
+#define SCREENNAME				"screen_name "
+#define USERID					"user_id "
 
 #define TARGETSCREENNAME			"target_screen_name "
 #define TARGETUSERID				"target_id "
-#define SINCEID						"since_id "
-#define TRIMUSER					"trim_user true"
-#define INCRETWEETS					"include_rts true"
-#define COUNT						"count "
+#define SINCEID					"since_id "
+#define TRIMUSER				"trim_user true"
+#define INCRETWEETS				"include_rts true"
+#define COUNT					"count "
 
 
+#define TWITTER_API_VERSION                     "1.1"
 
 /* default url*/
 
 #define OAUTH_URL_DEFAULT			"api.twitter.com/oauth/"
-#define API_URL_DEFAULT				"api.twitter.com/1.1/"
+#define API_URL_DEFAULT				"api.twitter.com/"TWITTER_API_VERSION"/"
 #define SEARCH_URL_DEFAULT			"search.twitter.com/search"
 
-#define	DEFAULT_API_FORMAT			Xml
+#define	DEFAULT_API_FORMAT			Json
 
 /* OAUTH URL */
 #define REQTOKEN_URL				"request_token"
@@ -68,7 +69,7 @@
 #define HOME_TIMELINE_URL			"statuses/home_timeline"
 #define PUBLIC_TIMELINE_URL			"statuses/public_timeline"
 #define FEATURED_USERS_URL			"statuses/featured"
-#define FRIENDS_TIMELINE_URL		"statuses/friends_timeline"
+#define FRIENDS_TIMELINE_URL		        "statuses/friends_timeline"
 #define MENTIONS_URL				"statuses/mentions"
 #define USERTIMELINE_URL			"statuses/user_timeline"
 
@@ -79,13 +80,13 @@
 
 /* Direct messages URLs */
 #define DIRECTMESSAGES_URL			"direct_messages"
-#define DIRECTMESSAGENEW_URL		"direct_messages/new"
-#define DIRECTMESSAGESSENT_URL		"direct_messages/sent"
-#define DIRECTMESSAGEDESTROY_URL	"direct_messages/destroy/"
+#define DIRECTMESSAGENEW_URL		        "direct_messages/new"
+#define DIRECTMESSAGESSENT_URL		        "direct_messages/sent"
+#define DIRECTMESSAGEDESTROY_URL	        "direct_messages/destroy/"
 
 /* Friendships URLs */
-#define FRIENDSHIPSCREATE_URL		"friendships/create"
-#define FRIENDSHIPSDESTROY_URL		"friendships/destroy"
+#define FRIENDSHIPSCREATE_URL		        "friendships/create"
+#define FRIENDSHIPSDESTROY_URL		        "friendships/destroy"
 #define FRIENDSHIPSSHOW_URL			"friendships/show"
 
 /* Social graphs URLs */
@@ -93,8 +94,8 @@
 #define FOLLOWERSIDS_URL			"followers/ids"
 
 /* Account URLs */
-#define ACCOUNTRATELIMIT_URL		"account/rate_limit_status"
-#define ACCOUNTVERIFYCRED_URL		"account/verify_credentials"
+#define ACCOUNTRATELIMIT_URL		        "account/rate_limit_status"
+#define ACCOUNTVERIFYCRED_URL		        "account/verify_credentials"
 
 /* Favorites URLs */
 #define FAVORITESGET_URL			"favorites"
@@ -108,11 +109,11 @@
 /* Saved Search URLs */
 #define SAVEDSEARCHGET_URL			"saved_searches"
 #define SAVEDSEARCHSHOW_URL			"saved_searches/show/"
-#define SAVEDSEARCHCREATE_URL		"saved_searches/create"
-#define SAVEDSEARCHDESTROY_URL		"saved_searches/destroy/"
+#define SAVEDSEARCHCREATE_URL		        "saved_searches/create"
+#define SAVEDSEARCHDESTROY_URL		        "saved_searches/destroy/"
 
 /* Trends URLs */
-#define TRENDS_URL					"trends"
+#define TRENDS_URL				"trends"
 #define TRENDSDAILY_URL				"trends/daily"
 #define TRENDSCURRENT_URL			"trends/current"
 #define TRENDSWEEKLY_URL			"trends/weekly"
@@ -121,7 +122,6 @@
 
 typedef enum
 {
-	Xml,
 	Json,
 	None
 }ApiFormatType_t;
@@ -147,7 +147,7 @@ typedef struct {
 
 
 extern	twitterURLS_t	*initURLS			(const string_t,const string_t, const string_t, const ApiFormatType_t);
-extern	void			uninitURLS			(twitterURLS_t *);
+extern	void		uninitURLS			(twitterURLS_t *);
 
 
 

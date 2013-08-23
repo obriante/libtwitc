@@ -65,6 +65,7 @@
 #include <twitc/timeline.h>
 #include <twitc/dm.h>
 #include <twitc/favorites.h>
+#include <twitc/twitcver.h>
 
 
 #endif /* TWCORE_H_ */

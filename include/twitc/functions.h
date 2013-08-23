@@ -24,6 +24,7 @@
 
 extern byte_t
 createDirectory(const string_t);
+
 extern string_t
 readRawTextFile(const string_t);
 

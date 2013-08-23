@@ -33,9 +33,9 @@ typedef struct{
 	string_t consumerSecretKey;
 }user_t;
 
-extern	user_t 			*initUser		(const string_t, const string_t, const string_t, const string_t, const string_t, const string_t);
+extern	user_t 			*initUser	(const string_t, const string_t, const string_t, const string_t, const string_t, const string_t);
 extern	void			writeUserFile	(const user_t *, const string_t);
 extern	user_t			*readUserFile	(const string_t);
-extern	void			uninitUser		(user_t *);
+extern	void			uninitUser	(user_t *);
 
 #endif /* USER_H_ */

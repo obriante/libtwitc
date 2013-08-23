@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include <curl/curl.h>
 
@@ -143,9 +144,7 @@ string_t compone_URL(const twitterURLS_t * twURLS, const ProtocolType_t protocol
 	string_t extension = NULL;
 	string_t protocol = NULL;
 
-	if(apiFormatType==Xml)
-		extension=EXTENSIONFORMAT_XML;
-	else if(apiFormatType==Json)
+	if(apiFormatType==Json)
 		extension=EXTENSIONFORMAT_JSON;
 	else
 		extension="\0";

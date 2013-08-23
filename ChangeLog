@@ -1,12 +1,20 @@
 [2012-08-27]
- * Direct Message support
- 	- Request DMs list
- 	- read XML DMs list
-    - read single  XML DM list
- 	- send Direct message
+ 	* 	Version 0.1
+ 		- Direct Message support
+ 		- Request DMs list
+ 		- read XML DMs list
+    	- read single  XML DM list
+ 		- send Direct message
  	
- * Favorites list
- 	-	 Request Favorites list
+ 	* Favorites list
+ 		-	 Request Favorites list
  	
 [2012-12-07]
-* JSON requests / parsing support - (JSONC is a C library for JSON )
+	* Version 0.1.1
+		- JSON requests / parsing support - (JSONC is a C library for JSON )
+
+[2013-08-23]
+	* Version 0.2
+		- Fix autotools
+		- REST API v1.1
+		- XML API deprecated
